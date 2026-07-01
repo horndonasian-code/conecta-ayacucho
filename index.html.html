@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Conecta — Ayacucho</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --ink-2: #3a3a5c;
+  --ink-3: #7c7c9a;
+  --ink-4: #b8b8cc;
+  --bg: #f5f5ff;
+  --white: #ffffff;
+  --line: #e8e8f4;
+  --line-2: #d8d8ee;
+  
+  --tag-bg: #EEF2FF;
+  --green: #10B981;
+  --green-bg: #ECFDF5;
+  --amber: #F59E0B;
+  --amber-bg: #FFFBEB;
+  --blue: #3B82F6;
+  --blue-bg: #EFF6FF;
+  --red: #EF4444;
+  --primary: #4F46E5;
+  --primary-l: #EEF2FF;
+  --primary-d: #3730A3;
+  --orange: #F97316;
+  --orange-l: #FFF7ED;
+  --pink: #EC4899;
+  --pink-bg: #FDF2F8;
+  --purple: #8B5CF6;
+  --purple-bg: #F5F3FF;;
+  --r: 14px;
+  --r-sm: 8px;
+  --r-pill: 100px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--white);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── Typography ── */
+.t-hero { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+.t-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
+.t-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.t-body { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.t-caption { font-size: 12px; color: var(--ink-3); }
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px 14px;
+  background: linear-gradient(135deg, #8B2E1A 0%, #C0442A 50%, #D4850A 100%);
+  border-bottom: none;
+  position: sticky; top: 0; z-index: 50;
+}
+.logo { font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+.logo em { font-style: normal; color: rgba(255,255,255,.65); font-weight: 400; }
+.back-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.2); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0; color: #fff;
+}
+.topbar-title { font-size: 16px; font-weight: 600; color: var(--ink); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.loc-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.2); border-radius: var(--r-pill);
+  padding: 5px 11px; font-size: 12px; font-weight: 600; color: #ffffff;
+  cursor: pointer;
+}
+
+/* ── Content ── */
+.content { padding: 20px; padding-bottom: 90px; }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
+  position: sticky; top: 57px; z-index: 40;
+  padding: 0 20px;
+}
+.tab {
+  flex: 1; padding: 13px 4px; text-align: center;
+  font-size: 13px; font-weight: 600; color: var(--ink-3);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.tab.active { color: #C0442A; border-bottom-color: #C0442A; }
+
+/* ── Search ── */
+.search-wrap { padding: 16px 20px 0; }
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--tag-bg); border-radius: var(--r);
+  padding: 12px 16px; transition: background .15s;
+}
+.search-bar:focus-within { background: #F5ECD8; }
+.search-icon { font-size: 16px; flex-shrink: 0; }
+.search-bar input {
+  border: none; background: transparent; font-size: 14px;
+  color: var(--ink); width: 100%; outline: none; font-family: inherit;
+}
+.search-bar input::placeholder { color: var(--ink-4); }
+
+/* ── Section ── */
+.section { margin-top: 24px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.see-all { font-size: 13px; font-weight: 600; color: var(--ink-3); cursor: pointer; }
+
+/* ── Category chips ── */
+.cat-scroll { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 4px; margin: 0 -20px; padding: 0 20px 4px; }
+.cat-scroll::-webkit-scrollbar { display: none; }
+.cat-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  background: var(--tag-bg); border-radius: var(--r);
+  padding: 14px 12px 11px; cursor: pointer; flex-shrink: 0; width: 76px;
+  transition: background .15s, transform .1s;
+  border: 1.5px solid transparent;
+}
+.cat-chip:active { transform: scale(0.96); background: #eeecea; }
+.cat-chip.active { background: linear-gradient(135deg,#C0442A,#D4850A); border-color: #C0442A; }
+.cat-chip.active .cat-chip-label { color: var(--white); }
+.cat-emoji { font-size: 22px; }
+.cat-chip-label { font-size: 11px; font-weight: 600; color: var(--ink-2); text-align: center; line-height: 1.2; }
+
+/* ── Pro card ── */
+.pro-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.pro-card:last-child { border-bottom: none; }
+.pro-avatar {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; flex-shrink: 0;
+}
+.pro-body { flex: 1; min-width: 0; }
+.pro-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+.pro-sub { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.pro-meta { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+.rating { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; color: var(--ink); }
+.rating-star { font-size: 11px; }
+.badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--r-pill); }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-ink { background: var(--tag-bg); color: var(--ink-2); }
+.pro-price { font-size: 14px; font-weight: 700; color: var(--ink); flex-shrink: 0; text-align: right; }
+.pro-price-sub { font-size: 11px; color: var(--ink-3); font-weight: 400; }
+
+/* ── Job card ── */
+.job-card {
+  border: 1.5px solid var(--line-2); border-radius: var(--r);
+  padding: 16px; margin-bottom: 10px; cursor: pointer;
+  transition: border-color .15s;
+}
+.job-card:active { border-color: #C0442A; }
+.job-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.job-logo {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  border: 1.5px solid var(--line);
+}
+.job-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.job-co { font-size: 13px; color: var(--ink-3); }
+.job-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: var(--r-pill); background: var(--tag-bg); color: var(--ink-2); }
+.chip-new { background: linear-gradient(135deg,#C0442A,#D4850A); color: var(--white); }
+.job-bottom { display: flex; align-items: center; justify-content: space-between; }
+.job-salary { font-size: 15px; font-weight: 700; color: var(--ink); }
+.job-link { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+
+/* ── Ad card ── */
+.ad-card {
+  border: 1.5px solid var(--line-2); border-radius: var(--r);
+  padding: 16px; margin-bottom: 10px; cursor: pointer;
+  transition: border-color .15s;
+}
+.ad-card:active { border-color: #C0442A; }
+.ad-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.ad-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.ad-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.ad-sub { font-size: 12px; color: var(--ink-3); }
+.ad-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-bottom: 10px; }
+.ad-footer { display: flex; align-items: center; justify-content: space-between; }
+.ad-price { font-size: 16px; font-weight: 700; color: var(--ink); }
+
+/* ── Detail ── */
+.detail-hero {
+  background: var(--tag-bg);
+  padding: 28px 20px 22px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+}
+.d-avatar {
+  width: 72px; height: 72px; border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; margin-bottom: 14px;
+  border: 2px solid rgba(0,0,0,.06);
+}
+.d-name { font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.3px; }
+.d-sub { font-size: 14px; color: var(--ink-3); margin-top: 4px; }
+.d-meta { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+.info-block { padding: 20px; border-bottom: 1px solid var(--line); }
+.info-block-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-label { color: var(--ink-3); }
+.info-val { font-weight: 600; color: var(--ink); }
+
+.review { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.review:last-child { border-bottom: none; }
+.review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.review-name { font-size: 13px; font-weight: 600; }
+.review-stars { font-size: 11px; color: #f59e0b; }
+.review-text { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+/* ── Sticky bottom ── */
+.sticky-bottom {
+  position: sticky; bottom: 0;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 9px;
+  z-index: 30;
+}
+
+/* ── Buttons ── */
+.btn {
+  width: 100%; padding: 15px 20px;
+  font-size: 15px; font-weight: 700;
+  border: none; border-radius: var(--r);
+  cursor: pointer; font-family: inherit;
+  transition: opacity .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn:active { opacity: .85; transform: scale(0.98); }
+.btn-dark { background: linear-gradient(135deg, #C0442A, #8B2E1A); color: var(--white); }
+.btn-light { background: var(--tag-bg); color: var(--ink); }
+.btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--line-2); }
+.btn-green { background: #15803d; color: var(--white); }
+
+/* ── Form ── */
+.form-section { padding: 20px; border-bottom: 1px solid var(--line); }
+.form-section-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 7px; }
+.form-control {
+  width: 100%; border: 1.5px solid var(--line-2);
+  border-radius: var(--r-sm); padding: 12px 14px;
+  font-size: 15px; color: var(--ink); background: var(--white);
+  font-family: inherit; transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.form-control:focus { outline: none; border-color: #C0442A; }
+textarea.form-control { resize: none; height: 90px; line-height: 1.5; }
+.radio-row { display: flex; gap: 9px; }
+.radio-opt {
+  flex: 1; padding: 11px; border: 1.5px solid var(--line-2);
+  border-radius: var(--r-sm); text-align: center; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--ink-3);
+  transition: all .15s;
+}
+.radio-opt.active { border-color: #C0442A; background: #C0442A; color: var(--white); }
+
+/* ── Pricing ── */
+.price-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.price-opt {
+  border: 1.5px solid var(--line-2); border-radius: var(--r);
+  padding: 14px 10px; text-align: center; cursor: pointer;
+  transition: all .15s; position: relative;
+}
+.price-opt.selected { border-color: #C0442A; background: linear-gradient(135deg,#C0442A,#8B2E1A); }
+.price-opt.selected .price-dur,
+.price-opt.selected .price-sol,
+.price-opt.selected .price-tag { color: var(--white); }
+.price-popular {
+  position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg,#D4850A,#C0442A); color: var(--white);
+  font-size: 9px; font-weight: 700; padding: 2px 8px;
+  border-radius: var(--r-pill); white-space: nowrap;
+}
+.price-opt.selected .price-popular { background: rgba(255,255,255,.25); }
+.price-dur { font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .04em; margin-bottom: 5px; }
+.price-sol { font-size: 22px; font-weight: 700; color: var(--ink); }
+.price-tag { font-size: 10px; color: var(--ink-3); margin-top: 3px; }
+
+/* ── Notice ── */
+.notice {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--tag-bg); border-radius: var(--r-sm);
+  padding: 12px 14px; font-size: 13px; color: var(--ink-2);
+}
+.notice-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Success ── */
+.success-wrap { padding: 60px 28px 20px; text-align: center; }
+.success-icon { font-size: 52px; margin-bottom: 20px; display: block; }
+.success-title { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 10px; }
+.success-sub { font-size: 15px; color: var(--ink-3); line-height: 1.6; }
+.success-card {
+  background: var(--tag-bg); border-radius: var(--r);
+  padding: 16px; margin: 24px 0; text-align: left;
+}
+
+/* ── Bottom nav ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  display: flex;
+  padding: 8px 0 calc(10px + env(safe-area-inset-bottom));
+  z-index: 60;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 4px 0; cursor: pointer; border: none; background: none;
+}
+.nav-icon { font-size: 22px; }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--ink-4); letter-spacing: .02em; }
+.nav-btn.active .nav-label { color: #C0442A; }
+.nav-btn.active .nav-icon { filter: grayscale(0); }
+
+/* ── Pub FAB (center) ── */
+.nav-fab {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: linear-gradient(135deg, #C0442A, #D4850A); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--white); margin-top: -10px;
+  flex-shrink: 0;
+}
+
+/* ── Filter pills ── */
+.filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px; margin: 14px -20px 0; padding-bottom: 2px; }
+.filter-scroll::-webkit-scrollbar { display: none; }
+.filter-pill {
+  white-space: nowrap; font-size: 12px; font-weight: 600;
+  padding: 7px 14px; border-radius: var(--r-pill);
+  border: 1.5px solid var(--line-2); cursor: pointer;
+  color: var(--ink-3); background: var(--white);
+  transition: all .15s;
+}
+.filter-pill.active { background: #C0442A; color: var(--white); border-color: #C0442A; }
+
+/* ── Banner ── */
+.hero-banner {
+  background: linear-gradient(135deg, #C0442A 0%, #8B2E1A 60%, #4A2E18 100%); color: var(--white);
+  border-radius: var(--r); padding: 20px;
+  margin-bottom: 0;
+}
+.hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; opacity: .6; margin-bottom: 8px; }
+.hero-title { font-size: 21px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; margin-bottom: 10px; }
+.hero-sub { font-size: 13px; opacity: .7; line-height: 1.5; }
+.hero-pills { display: flex; gap: 7px; margin-top: 14px; flex-wrap: wrap; }
+.hero-pill { font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: var(--r-pill); background: rgba(255,255,255,.12); color: var(--white); }
+
+/* ── Divider ── */
+.div-line { height: 8px; background: var(--bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0; }
+
+/* ── Stats strip ── */
+.stats-strip { display: flex; padding: 16px 20px; gap: 0; border-bottom: 1px solid var(--line); }
+.stat { flex: 1; text-align: center; }
+.stat + .stat { border-left: 1px solid var(--line); }
+.stat-num { font-size: 20px; font-weight: 700; color: var(--ink); }
+.stat-lbl { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ════════════ SCREEN: HOME ════════════ -->
+<div id="s-home" class="screen active">
+  <div class="topbar">
+    <div class="logo">Conecta <em>Ayacucho</em></div>
+    <div class="topbar-right">
+      <div class="loc-pill">📍 Huamanga</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab" id="tab-p" onclick="switchTab('p')">Quiénes somos</div>
+    <div class="tab active" id="tab-s" onclick="switchTab('s')">Servicios</div>
+    <div class="tab" id="tab-e" onclick="switchTab('e')">Empleos</div>
+    <div class="tab" id="tab-a" onclick="switchTab('a')">Anuncios</div>
+  </div>
+
+  <!-- SERVICIOS -->
+  <div id="panel-s">
+    <div class="search-wrap"><div class="search-bar"><span class="search-icon">🔍</span><input placeholder="Buscar plomero, electricista..." oninput="filterPros(this.value)" id="s-search"></div></div>
+    <div class="content" style="padding-top:20px">
+      <div class="hero-banner">
+        <div class="hero-eyebrow">CONECTA AYACUCHO</div>
+        <div class="hero-title">Profesionales verificados a tu puerta</div>
+        <div class="hero-sub">Gasfiteros, electricistas, limpieza y más — en menos de 30 min.</div>
+        <div class="hero-pills">
+          <span class="hero-pill">✓ DNI verificado</span>
+          <span class="hero-pill">⭐ Con calificaciones</span>
+          <span class="hero-pill">💳 Yape / Plin</span>
+        </div>
+      </div>
+      <div class="section" style="margin-top:0">
+        <div class="t-label" style="margin-bottom:12px">Categorías</div>
+        <div class="cat-scroll">
+          <div class="cat-chip" onclick="filterCat('all',this)"><span class="cat-emoji">🔍</span><div class="cat-chip-label">Todos</div></div>
+          <div class="cat-chip" onclick="filterCat('gas',this)"><span class="cat-emoji">🔧</span><div class="cat-chip-label">Gasfitería</div></div>
+          <div class="cat-chip" onclick="filterCat('elec',this)"><span class="cat-emoji">⚡</span><div class="cat-chip-label">Electricidad</div></div>
+          <div class="cat-chip" onclick="filterCat('clean',this)"><span class="cat-emoji">🧹</span><div class="cat-chip-label">Limpieza</div></div>
+          <div class="cat-chip" onclick="filterCat('paint',this)"><span class="cat-emoji">🎨</span><div class="cat-chip-label">Pintura</div></div>
+          <div class="cat-chip" onclick="filterCat('carp',this)"><span class="cat-emoji">🪚</span><div class="cat-chip-label">Carpintería</div></div>
+          <div class="cat-chip" onclick="filterCat('beauty',this)"><span class="cat-emoji">✂️</span><div class="cat-chip-label">Belleza</div></div>
+          <div class="cat-chip" onclick="filterCat('tech',this)"><span class="cat-emoji">💻</span><div class="cat-chip-label">Tecnología</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="t-label" style="margin-bottom:0">Profesionales</div>
+        <div id="pros-list"></div>
+      </div>
+      <!-- CTA profesional -->
+      <div style="margin-top:24px;background:linear-gradient(135deg,#C0442A,#8B2E1A);border-radius:var(--r);padding:20px;color:#fff;margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.65;margin-bottom:8px">¿ERES PROFESIONAL?</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px;line-height:1.3">Regístrate gratis y empieza a recibir clientes hoy</div>
+        <div style="font-size:13px;opacity:.8;margin-bottom:16px;line-height:1.5">🎁 Primer mes completamente gratis. Luego solo S/ 50 al mes — sin comisiones, sin límite de clientes.</div>
+        <button onclick="abrirRegistro()" style="width:100%;padding:13px;background:#fff;color:#C0442A;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Crear mi perfil gratis →</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PRESENTACIÓN -->
+  <div id="panel-p" style="display:none">
+    <div class="content" style="padding-top:20px;padding-bottom:120px">
+
+      <!-- Hero -->
+      <div style="background:linear-gradient(135deg,#C0442A 0%,#8B2E1A 60%,#4A2E18 100%);border-radius:var(--r);padding:22px;margin-bottom:24px;color:#fff">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.65;margin-bottom:8px">QUIÉNES SOMOS</div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;line-height:1.25;margin-bottom:10px">La plataforma local de Ayacucho</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.6">Servicios a domicilio, empleos y anuncios — todo en un solo lugar, rápido y seguro.</div>
+        <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
+          <span style="font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,.15);color:#fff">✓ Verificado</span>
+          <span style="font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,.15);color:#fff">📍 100% local</span>
+          <span style="font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,.15);color:#fff">💳 Yape & Plin</span>
+        </div>
+      </div>
+
+      <!-- 3 pillars -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px">¿Qué encontrarás?</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px">
+        <div style="border:1.5px solid var(--line-2);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer" onclick="switchTab('s');document.getElementById('tab-s').click()">
+          <div style="font-size:26px;margin-bottom:8px">🔧</div>
+          <div style="font-size:12px;font-weight:700;color:#C0442A;margin-bottom:4px">Servicios</div>
+          <div style="font-size:11px;color:var(--ink-3);line-height:1.4">Profesionales a domicilio</div>
+        </div>
+        <div style="border:1.5px solid var(--line-2);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer" onclick="switchTab('e');document.getElementById('tab-e').click()">
+          <div style="font-size:26px;margin-bottom:8px">💼</div>
+          <div style="font-size:12px;font-weight:700;color:#D4850A;margin-bottom:4px">Empleos</div>
+          <div style="font-size:11px;color:var(--ink-3);line-height:1.4">Ofertas de trabajo</div>
+        </div>
+        <div style="border:1.5px solid var(--line-2);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer" onclick="switchTab('a');document.getElementById('tab-a').click()">
+          <div style="font-size:26px;margin-bottom:8px">📢</div>
+          <div style="font-size:12px;font-weight:700;color:#2D6A4F;margin-bottom:4px">Anuncios</div>
+          <div style="font-size:11px;color:var(--ink-3);line-height:1.4">Compra, vende, alquila</div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px">¿Cómo funciona?</div>
+      <div style="border:1.5px solid var(--line-2);border-radius:var(--r);overflow:hidden;margin-bottom:24px">
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border-bottom:1px solid var(--line)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C0442A,#8B2E1A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">1</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Busca lo que necesitas</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">Explora servicios a domicilio, ofertas de empleo y anuncios locales — todo en un solo lugar.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border-bottom:1px solid var(--line)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#D4850A,#B8860B);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">2</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Conecta directamente</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">Contacta al profesional, empresa o particular que más te conviene. Sin intermediarios.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border-bottom:1px solid var(--line)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2D6A4F,#1A5276);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">3</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Acuerdan juntos</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">Tú y el profesional definen los detalles, el horario y las condiciones directamente.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7D6149,#4A2E18);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">4</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">¡Listo!</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">El trabajo se realiza y ambas partes quedan satisfechas. Puedes dejar tu calificación al finalizar.</div></div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Stats -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px">Conecta en números</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:40px">
+
+        <div style="display:flex;align-items:center;gap:16px;background:var(--tag-bg);border-radius:var(--r);padding:16px 18px">
+          <div style="font-size:32px;font-weight:700;color:#C0442A;letter-spacing:-1px;flex-shrink:0;min-width:54px">9+</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Categorías de servicios</div>
+            <div style="font-size:12px;color:var(--ink-3);margin-top:2px">Gasfitería, electricidad, limpieza, clases y más</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;background:var(--tag-bg);border-radius:var(--r);padding:16px 18px">
+          <div style="font-size:32px;font-weight:700;color:#D4850A;letter-spacing:-1px;flex-shrink:0;min-width:54px">100%</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Profesionales verificados</div>
+            <div style="font-size:12px;color:var(--ink-3);margin-top:2px">DNI y antecedentes comprobados antes de publicar</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;background:var(--tag-bg);border-radius:var(--r);padding:16px 18px">
+          <div style="font-size:32px;font-weight:700;color:#2D6A4F;letter-spacing:-1px;flex-shrink:0;min-width:54px">3</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Secciones en una sola app</div>
+            <div style="font-size:12px;color:var(--ink-3);margin-top:2px">Servicios, empleos y anuncios — todo local en Ayacucho</div>
+          </div>
+        </div>
+
+
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <!-- EMPLEOS -->
+  <div id="panel-e" style="display:none">
+    <div class="search-wrap"><div class="search-bar"><span class="search-icon">🔍</span><input placeholder="Buscar empleo, cargo, empresa..."></div></div>
+    <div class="filter-scroll">
+      <div class="filter-pill active" onclick="filterJobs('all',this)">Todos</div>
+      <div class="filter-pill" onclick="filterJobs('restaurante',this)">Restaurantes</div>
+      <div class="filter-pill" onclick="filterJobs('comercio',this)">Comercio</div>
+      <div class="filter-pill" onclick="filterJobs('salud',this)">Salud</div>
+      <div class="filter-pill" onclick="filterJobs('educacion',this)">Educación</div>
+      <div class="filter-pill" onclick="filterJobs('otros',this)">Otros</div>
+    </div>
+    <div class="content" style="padding-top:18px">
+      <div id="jobs-list"></div>
+      <button class="btn btn-dark" style="margin-top:6px" onclick="goTo('s-publish');setMode('empleo')">+ Publicar empleo</button>
+    </div>
+  </div>
+
+  <!-- ANUNCIOS -->
+  <div id="panel-a" style="display:none">
+    <div class="search-wrap"><div class="search-bar"><span class="search-icon">🔍</span><input placeholder="Buscar inmueble, vehículo, producto..."></div></div>
+    <div class="filter-scroll">
+      <div class="filter-pill active">Todos</div>
+      <div class="filter-pill">Inmuebles</div>
+      <div class="filter-pill">Vehículos</div>
+      <div class="filter-pill">Electrónica</div>
+      <div class="filter-pill">Ropa</div>
+    </div>
+    <div class="content" style="padding-top:18px">
+      <div id="ads-list"></div>
+      <button class="btn btn-dark" style="margin-top:6px" onclick="goTo('s-publish');setMode('anuncio')">+ Publicar anuncio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: PRO DETAIL ════════════ -->
+<div id="s-pro" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="topbar-title" id="d-topname">Perfil</span>
+  </div>
+  <div class="detail-hero">
+    <div class="d-avatar" id="d-av">CQ</div>
+    <div class="d-name" id="d-name">Carlos Quispe</div>
+    <div class="d-sub" id="d-job">Gasfitero profesional</div>
+    <div class="d-meta">
+      <span class="badge badge-green">✓ Verificado</span>
+      <span class="rating"><span class="rating-star">★</span><span id="d-rating">4.9</span></span>
+      <span class="t-caption" id="d-works">47 trabajos</span>
+    </div>
+  </div>
+  <div class="stats-strip">
+    <div class="stat"><div class="stat-num" id="d-stat-w">47</div><div class="stat-lbl">Trabajos</div></div>
+    <div class="stat"><div class="stat-num" id="d-stat-r">4.9</div><div class="stat-lbl">Calificación</div></div>
+    <div class="stat"><div class="stat-num">15'</div><div class="stat-lbl">Responde</div></div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Detalles</div>
+  
+    <div class="info-row"><span class="info-label">Zona de trabajo</span><span class="info-val">Ayacucho completo</span></div>
+    <div class="info-row"><span class="info-label">Pago aceptado</span><span class="info-val">Yape · Plin · Efectivo</span></div>
+    <div class="info-row"><span class="info-label">Disponibilidad</span><span class="info-val" style="color:var(--green)">Disponible hoy</span></div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Opiniones recientes</div>
+    <div class="review"><div class="review-top"><span class="review-name">María T.</span><span class="review-stars">★★★★★</span></div><div class="review-text">Llegó en 20 minutos, muy profesional y dejó todo limpio.</div></div>
+    <div class="review"><div class="review-top"><span class="review-name">Pedro L.</span><span class="review-stars">★★★★★</span></div><div class="review-text">Excelente trabajo, precio justo. Lo recomendaría a todos.</div></div>
+    <div class="review"><div class="review-top"><span class="review-name">Carmen R.</span><span class="review-stars">★★★★☆</span></div><div class="review-text">Muy puntual y explicó bien el problema antes de empezar.</div></div>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="goTo('s-request')">Solicitar servicio</button>
+    <button class="btn btn-light" onclick="openWA()">📱 Contactar por WhatsApp</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: JOB DETAIL ════════════ -->
+<div id="s-job" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="topbar-title">Oferta de empleo</span>
+  </div>
+  <div class="detail-hero" id="j-hero">
+    <div style="font-size:38px;margin-bottom:14px" id="j-icon">🍽</div>
+    <div class="d-name" id="j-title">Mozo / Mesero</div>
+    <div class="d-sub" id="j-co">Restaurante La Casona</div>
+    <div class="d-meta">
+      <span class="badge badge-ink" id="j-tipo">Empresa</span>
+      <span class="badge badge-green" id="j-horario">Tiempo completo</span>
+    </div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Condiciones</div>
+    <div class="info-row"><span class="info-label">Salario</span><span class="info-val" id="j-sal">S/ 1,200/mes</span></div>
+    <div class="info-row"><span class="info-label">Ubicación</span><span class="info-val">Ayacucho, Huamanga</span></div>
+    <div class="info-row"><span class="info-label">Publicado</span><span class="info-val" id="j-date">Hace 2 días</span></div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Descripción</div>
+    <p class="t-body" id="j-desc" style="margin-bottom:16px"></p>
+    <div class="info-block-title">Requisitos</div>
+    <p class="t-body" id="j-reqs"></p>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="openWA()">Postular ahora</button>
+    <button class="btn btn-light" onclick="openWA()">📱 Preguntar por WhatsApp</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: REQUEST ════════════ -->
+<div id="s-request" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('s-pro')">←</button>
+    <span class="topbar-title">Solicitar servicio</span>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">¿Qué necesitas?</div>
+    <div class="form-group"><label class="form-label">Tipo de trabajo</label><select class="form-control"><option>Reparación urgente</option><option>Instalación nueva</option><option>Mantenimiento</option><option>Presupuesto</option></select></div>
+    <div class="form-group"><label class="form-label">¿Cuándo?</label><select class="form-control"><option>Hoy mismo</option><option>Mañana</option><option>Esta semana</option></select></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Tu información</div>
+    <div class="form-group"><label class="form-label">Dirección en Ayacucho</label><input type="text" class="form-control" placeholder="Jr. Lima 245, Huamanga"></div>
+    <div class="form-group"><label class="form-label">Celular (WhatsApp)</label><input type="tel" class="form-control" placeholder="987 654 321"></div>
+    <div class="form-group"><label class="form-label">Describe el problema</label><textarea class="form-control" placeholder="Cuéntanos qué necesitas con detalle..."></textarea></div>
+    <div class="form-group"><label class="form-label">Pago preferido</label><select class="form-control"><option>Yape</option><option>Plin</option><option>Efectivo</option></select></div>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="goTo('s-ok-req')">Enviar solicitud</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: PUBLISH ════════════ -->
+<div id="s-publish" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="topbar-title" id="pub-title">Publicar anuncio</span>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">¿Quién publica?</div>
+    <div class="radio-row">
+      <div class="radio-opt active" id="rb-emp" onclick="setPublisher('emp')">🏢 Empresa</div>
+      <div class="radio-opt" id="rb-part" onclick="setPublisher('part')">👤 Particular</div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Información del anuncio</div>
+    <div class="form-group"><label class="form-label">Nombre de empresa / tu nombre</label><input type="text" class="form-control" placeholder="Ej: Restaurante La Casona"></div>
+    <div class="form-group"><label class="form-label">Categoría</label><select class="form-control" id="pub-cat"><option>Selecciona...</option></select></div>
+    <div class="form-group"><label class="form-label">Título</label><input type="text" class="form-control" placeholder="Ej: Se busca mozo con experiencia"></div>
+    <div class="form-group"><label class="form-label">Descripción completa</label><textarea class="form-control" placeholder="Detalla el puesto, requisitos, condiciones..."></textarea></div>
+
+      <div class="form-group">
+        <label class="form-label">Fotos del anuncio <span style="color:var(--ink-3);font-weight:400">(opcional · máx. 3)</span></label>
+        <div id="fotos-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+        <label for="pub-fotos-input" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);cursor:pointer;background:var(--tag-bg)">
+          <span style="font-size:22px">📷</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink)">Agregar fotos</div>
+            <div style="font-size:11px;color:var(--ink-3)">JPG o PNG · máx. 5MB por foto</div>
+          </div>
+        </label>
+        <input type="file" id="pub-fotos-input" accept="image/*" multiple style="display:none" onchange="previewAnuncioFotos(this)">
+      </div>
+    <div class="form-group"><label class="form-label">Salario / Precio (opcional)</label><input type="text" class="form-control" placeholder="Ej: S/ 1,200 / mes"></div>
+    <div class="form-group"><label class="form-label">Celular WhatsApp</label><input type="tel" class="form-control" placeholder="913 330 712"></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Duración del anuncio</div>
+    <div class="price-row" style="margin-bottom:16px">
+      <div class="price-opt" onclick="selPlan(this,'7 días','S/15')">
+        <div class="price-dur">7 DÍAS</div>
+        <div class="price-sol">S/15</div>
+        <div class="price-tag">Básico</div>
+      </div>
+      <div class="price-opt selected" onclick="selPlan(this,'15 días','S/25')">
+        <div class="price-popular">MÁS POPULAR</div>
+        <div class="price-dur">15 DÍAS</div>
+        <div class="price-sol">S/25</div>
+        <div class="price-tag">Recomendado</div>
+      </div>
+      <div class="price-opt" onclick="selPlan(this,'30 días','S/40')">
+        <div class="price-dur">30 DÍAS</div>
+        <div class="price-sol">S/40</div>
+        <div class="price-tag">Destacado</div>
+      </div>
+    </div>
+    <div class="notice">
+      <span class="notice-icon">ℹ️</span>
+      <span>Tras el pago por <strong>Yape al 913 330 712</strong>, tu anuncio se publica en menos de 1 hora.</span>
+    </div>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" id="pub-submit-btn" onclick="publicarAnuncioConFotos()">Pagar y publicar</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: OK REQUEST ════════════ -->
+<div id="s-ok-req" class="screen">
+  <div class="topbar" style="border:none"></div>
+  <div class="success-wrap">
+    <span class="success-icon">✅</span>
+    <div class="success-title">Solicitud enviada</div>
+    <div class="success-sub">El profesional te contactará en menos de 15 minutos por WhatsApp.</div>
+    <div class="success-card">
+      <div class="info-row" style="padding-top:0"><span class="info-label">Profesional</span><span class="info-val" id="ok-pro">—</span></div>
+      <div class="info-row"><span class="info-label">Comisión Conecta</span><span class="info-val" style="color:var(--green)">15%</span></div>
+      <div class="info-row" style="padding-bottom:0;border:none"><span class="info-label">Estado</span><span class="info-val" style="color:var(--amber)">Notificando...</span></div>
+    </div>
+  </div>
+  <div class="sticky-bottom">
+    <button class="btn btn-green" onclick="openWA()">📱 Seguir por WhatsApp</button>
+    <button class="btn btn-light" onclick="goTo('s-home')">Volver al inicio</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: OK PUBLISH ════════════ -->
+<div id="s-ok-pub" class="screen">
+  <div class="topbar" style="border:none"></div>
+  <div class="success-wrap">
+    <span class="success-icon">📢</span>
+    <div class="success-title">¡Anuncio publicado!</div>
+    <div class="success-sub">Tu anuncio ya es visible para todos los usuarios de Conecta Ayacucho.</div>
+    <div class="success-card">
+      <div class="info-row" style="padding-top:0"><span class="info-label">Duración</span><span class="info-val" id="ok-plan">15 días</span></div>
+      <div class="info-row"><span class="info-label">Precio pagado</span><span class="info-val" id="ok-price">S/25</span></div>
+      <div class="info-row" style="padding-bottom:0;border:none"><span class="info-label">Estado</span><span class="info-val" style="color:var(--green)">Activo ✓</span></div>
+    </div>
+  </div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="goTo('s-home')">Ver inicio</button>
+    <button class="btn btn-light" onclick="goTo('s-publish')">Publicar otro</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: MI CUENTA ════════════ -->
+<div id="s-cuenta" class="screen">
+  <div class="topbar">
+    <div class="logo">Conecta <em>Ayacucho</em></div>
+  </div>
+  <div class="content">
+    <div style="padding:10px 0 24px">
+      <div class="t-hero">Hola 👋</div>
+      <div class="t-body" style="margin-top:6px">Gestiona tus anuncios y solicitudes</div>
+    </div>
+    <div class="t-label" style="margin-bottom:12px">Mis anuncios</div>
+    <div style="background:var(--tag-bg);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:20px">
+      <div style="font-size:28px;margin-bottom:8px">📋</div>
+      <div style="font-size:14px;color:var(--ink-3)">Aún no tienes anuncios publicados.</div>
+    </div>
+    <button class="btn btn-dark" style="margin-bottom:10px" onclick="goTo('s-publish')">+ Publicar anuncio o empleo</button>
+    <div class="div-line" style="margin:24px -20px"></div>
+    <div class="t-label" style="margin-bottom:12px;margin-top:20px">Opciones</div>
+    <div class="info-row" style="cursor:pointer" onclick="openWA()"><span style="font-size:14px;color:var(--ink-2)">Soporte WhatsApp</span><span style="color:var(--ink-3)">→</span></div>
+    <div class="info-row" style="cursor:pointer" onclick="goTo('s-publish');setMode('empleo')"><span style="font-size:14px;color:var(--ink-2)">Publicar empleo</span><span style="color:var(--ink-3)">→</span></div>
+    <div class="info-row" style="cursor:pointer" onclick="goTo('s-publish');setMode('servicio')"><span style="font-size:14px;color:var(--ink-2)">Registrarme como profesional</span><span style="color:var(--ink-3)">→</span></div>
+    <div class="info-row" style="cursor:pointer;border:none"><span style="font-size:14px;color:var(--ink-2)">Preguntas frecuentes</span><span style="color:var(--ink-3)">→</span></div>
+  </div>
+</div>
+
+<!-- ════════════ BOTTOM NAV ════════════ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nb-home" onclick="navTo('s-home','nb-home')"><span class="nav-icon">🏠</span><div class="nav-label">Inicio</div></button>
+  <button class="nav-btn" id="nb-emp" onclick="navTo('s-home','nb-emp');switchTab('e')"><span class="nav-icon">💼</span><div class="nav-label">Empleos</div></button>
+  <button class="nav-fab" onclick="goTo('s-publish')">＋</button>
+  <button class="nav-btn" id="nb-ann" onclick="navTo('s-home','nb-ann');switchTab('a')"><span class="nav-icon">📢</span><div class="nav-label">Anuncios</div></button>
+  <button class="nav-btn" id="nb-acc" onclick="navTo('s-cuenta','nb-acc')"><span class="nav-icon">👤</span><div class="nav-label">Cuenta</div></button>
+</nav>
+</div>
+
+<script>
+// ── Data ───────────────────────────────────
+var PROS = {
+  gas:[{n:'Carlos Quispe',j:'Gasfitero profesional',r:4.9,w:47,av:'CQ',c1:'#f0f0ee',c2:'#1a1a1a'},{n:'Miguel Ccari',j:'Gasfitero · 10 años exp.',r:4.7,w:29,av:'MC',c1:'#FDF3DC',c2:'#D4850A'}],
+  elec:[{n:'Juan Huamán',j:'Electricista certificado',r:4.7,w:31,av:'JH',c1:'#FEF9E7',c2:'#B8860B'},{n:'Luis Palomino',j:'Electricista residencial',r:4.6,w:18,av:'LP',c1:'#E8F4F8',c2:'#1A5276'}],
+  clean:[{n:'Rosa Mendoza',j:'Limpieza del hogar',r:4.8,w:63,av:'RM',c1:'#E8F5EE',c2:'#2D6A4F'},{n:'Ana Sulca',j:'Limpieza profunda',r:4.9,w:41,av:'AS',c1:'#F0EBE3',c2:'#7D6149'}],
+  paint:[{n:'Pedro Flores',j:'Pintor de interiores',r:4.6,w:22,av:'PF',c1:'#FAEAE6',c2:'#8B2E1A'}],
+  carp:[{n:'David Ore',j:'Carpintero de muebles',r:4.8,w:15,av:'DO',c1:'#FDF3DC',c2:'#B8860B'}],
+  beauty:[{n:'Carla Huayta',j:'Estilista a domicilio',r:4.9,w:88,av:'CH',c1:'#E8F5EE',c2:'#2D6A4F'}],
+  tech:[{n:'Marco Rojas',j:'Técnico PC y celulares',r:4.7,w:44,av:'MR',c1:'#FAEAE6',c2:'#C0442A'}]
+};
+
+var ALL_PROS = [];
+Object.keys(PROS).forEach(function(k){ PROS[k].forEach(function(p){ ALL_PROS.push(Object.assign({},p,{cat:k})); }); });
+
+var JOBS = [
+  {id:1,title:'Mozo / Mesero',co:'Restaurante La Casona',icon:'🍽',cat:'restaurante',tipo:'Empresa',horario:'Tiempo completo',sal:'S/ 1,200/mes',date:'Hace 2 días',desc:'Buscamos mozo/a con experiencia mínima de 6 meses en restaurantes. Buen trato al cliente, puntualidad y trabajo en equipo. Ofrecemos sueldo fijo más propinas y alimentación.',reqs:'• Experiencia mínima 6 meses\n• Disponibilidad inmediata\n• DNI vigente\n• Actitud positiva',nuevo:false},
+  {id:2,title:'Cajero/a',co:'Tienda El Progreso',icon:'🛒',cat:'comercio',tipo:'Empresa',horario:'Tiempo completo',sal:'S/ 950/mes',date:'Hace 1 día',desc:'Tienda de abarrotes busca cajero/a con experiencia en manejo de caja registradora y atención al cliente.',reqs:'• Experiencia en caja\n• Honestidad comprobable\n• Disponibilidad inmediata',nuevo:false},
+  {id:3,title:'Enfermero/a técnico',co:'Clínica San Juan',icon:'🏥',cat:'salud',tipo:'Empresa',horario:'Turnos rotativos',sal:'S/ 1,500/mes',date:'Hace 3 días',desc:'Clínica privada necesita enfermero/a técnico titulado para área de hospitalización. Experiencia mínima 1 año.',reqs:'• Título técnico en enfermería\n• Colegiatura vigente\n• 1 año de experiencia mínimo',nuevo:false},
+  {id:4,title:'Profesor/a de matemáticas',co:'Colegio Los Andes',icon:'📚',cat:'educacion',tipo:'Empresa',horario:'Tiempo completo',sal:'S/ 1,800/mes',date:'Hace 5 días',desc:'Institución educativa requiere docente de matemáticas para nivel secundaria con título pedagógico.',reqs:'• Título pedagógico o licenciatura afín\n• Experiencia docente mínima 2 años\n• Responsabilidad y vocación de servicio',nuevo:false},
+  {id:5,title:'Repartidor con moto',co:'Pizzería Napoli',icon:'🍕',cat:'restaurante',tipo:'Empresa',horario:'Medio tiempo',sal:'S/ 800 + comisiones',date:'Hoy',desc:'Pizzería busca repartidor con moto propia para delivery. Zona céntrica de Huamanga. Horario: 6pm–11pm.',reqs:'• Moto propia y licencia de conducir\n• Conocer Ayacucho\n• Responsabilidad y puntualidad',nuevo:true},
+  {id:6,title:'Vendedor/a de tienda',co:'Particular – María G.',icon:'👗',cat:'comercio',tipo:'Particular',horario:'Tiempo completo',sal:'S/ 900/mes',date:'Hace 2 días',desc:'Busco vendedora para tienda de ropa en mercado central. Con experiencia en ventas y buena presencia.',reqs:'• Experiencia en ventas\n• Buena presencia\n• Trato amable con clientes',nuevo:false},
+];
+
+var ADS = [
+  {id:1,title:'Alquilo local comercial 80m²',icon:'🏠',price:'S/ 1,200/mes',tipo:'Particular',date:'Hoy',desc:'Local en Jr. Lima, zona céntrica, ideal para tienda o restaurante. Con baño y acceso directo a calle principal.',nuevo:true},
+  {id:2,title:'Vendo moto Honda 150cc 2022',icon:'🏍',price:'S/ 8,500',tipo:'Particular',date:'Hace 1 día',desc:'Moto en excelente estado, 15,000 km. SOAT vigente, documentos al día. Solo uso particular.',nuevo:false},
+  {id:3,title:'iPhone 13 Pro 256GB',icon:'📱',price:'S/ 2,800',tipo:'Particular',date:'Hoy',desc:'iPhone en perfecto estado, caja original, accesorios incluidos. Color azul sierra. Garantía vigente.',nuevo:true},
+  {id:4,title:'Clases de inglés — desde S/50/mes',icon:'📚',price:'S/ 50/mes',tipo:'Empresa',date:'Hace 3 días',desc:'Clases de inglés básico a avanzado. Grupos pequeños, horarios flexibles mañana y tarde. Certificado al finalizar.',nuevo:false},
+  {id:5,title:'Departamento amoblado 2 habitaciones',icon:'🏢',price:'S/ 700/mes',tipo:'Particular',date:'Hace 2 días',desc:'Dpto amoblado, 2 habitaciones, cocina equipada, baño. Barrio Santa Elena. Agua y luz incluidas.',nuevo:false},
+];
+
+// ── State ──────────────────────────────────
+var prev = 's-home';
+var curPlan = {dur:'15 días', price:'S/25'};
+var curPro = null;
+
+// ── Nav ────────────────────────────────────
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goBack(){ goTo(prev); }
+function navTo(sid,nid){
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});
+  document.getElementById(nid).classList.add('active');
+  goTo(sid);
+}
+function switchTab(t){
+  ['s','p','e','a'].forEach(function(x){
+    document.getElementById('tab-'+x).classList.remove('active');
+    document.getElementById('panel-'+x).style.display='none';
+  });
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('panel-'+t).style.display='block';
+}
+
+// ── Render ─────────────────────────────────
+function proHTML(p){
+  return '<div class="pro-card" onclick="showPro(\''+p.n+'\',\''+p.j+'\','+p.r+','+p.w+',\''+p.p+'\',\''+p.av+'\',\''+p.c1+'\',\''+p.c2+'\')">'
+    +'<div class="pro-avatar" style="background:'+p.c1+';color:'+p.c2+'">'+p.av+'</div>'
+    +'<div class="pro-body">'
+    +'<div class="pro-name">'+p.n+'</div>'
+    +'<div class="pro-sub">'+p.j+'</div>'
+    +'<div class="pro-meta"><span class="rating"><span class="rating-star">★</span>'+p.r+'</span><span class="badge badge-green">✓ Verificado</span><span class="t-caption">'+p.w+' trabajos</span></div>'
+    +'</div>'
+    
+    +'</div>';
+}
+
+function jobHTML(j){
+  return '<div class="job-card" onclick="showJob('+j.id+')">'
+    +'<div class="job-top">'
+    +'<div class="job-logo">'+j.icon+'</div>'
+    +'<div><div class="job-title">'+j.title+(j.nuevo?' <span class="chip chip-new">NUEVO</span>':'')+'</div>'
+    +'<div class="job-co">'+j.co+'</div></div>'
+    +'</div>'
+    +'<div class="job-chips">'
+    +'<span class="chip">'+j.tipo+'</span>'
+    +'<span class="chip">'+j.horario+'</span>'
+    +'<span class="chip">'+j.date+'</span>'
+    +'</div>'
+    +'<div class="job-bottom"><span class="job-salary">'+j.sal+'</span><span class="job-link">Ver detalles →</span></div>'
+    +'</div>';
+}
+
+function adHTML(a){
+  return '<div class="ad-card" onclick="alert(\'Anuncio: \'+\''+a.title+'\')">'
+    +'<div class="ad-header">'
+    +'<div class="ad-icon">'+a.icon+'</div>'
+    +'<div><div class="ad-title">'+a.title+(a.nuevo?' <span class="chip chip-new" style="font-size:10px;padding:2px 7px">HOY</span>':'')+'</div>'
+    +'<div class="ad-sub">'+a.tipo+' · '+a.date+'</div></div>'
+    +'</div>'
+    +'<div class="ad-desc">'+a.desc.substring(0,90)+'...</div>'
+    +'<div class="ad-footer"><span class="ad-price">'+a.price+'</span><span class="job-link">Ver más →</span></div>'
+    +'</div>';
+}
+
+// ── Show detail ────────────────────────────
+function showPro(n,j,r,w,p,av,c1,c2){
+  prev = document.querySelector('.screen.active').id;
+  curPro = n;
+  document.getElementById('d-topname').textContent = n;
+  document.getElementById('d-av').textContent = av;
+  document.getElementById('d-av').style.background = c1;
+  document.getElementById('d-av').style.color = c2;
+  document.getElementById('d-name').textContent = n;
+  document.getElementById('d-job').textContent = j;
+  document.getElementById('d-rating').textContent = r;
+  document.getElementById('d-works').textContent = w+' trabajos';
+  
+  document.getElementById('d-stat-w').textContent = w;
+  document.getElementById('d-stat-r').textContent = r;
+  document.getElementById('ok-pro').textContent = n;
+  goTo('s-pro');
+}
+
+function showJob(id){
+  prev = document.querySelector('.screen.active').id;
+  var j = JOBS.find(function(x){return x.id===id});
+  if(!j) return;
+  document.getElementById('j-icon').textContent = j.icon;
+  document.getElementById('j-title').textContent = j.title;
+  document.getElementById('j-co').textContent = j.co;
+  document.getElementById('j-tipo').textContent = j.tipo;
+  document.getElementById('j-horario').textContent = j.horario;
+  document.getElementById('j-sal').textContent = j.sal;
+  document.getElementById('j-date').textContent = j.date;
+  document.getElementById('j-desc').textContent = j.desc;
+  document.getElementById('j-reqs').innerHTML = j.reqs.replace(/\n/g,'<br>');
+  goTo('s-job');
+}
+
+// ── Filters ────────────────────────────────
+function filterCat(cat, el){
+  document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active')});
+  el.classList.add('active');
+  var list = cat==='all' ? ALL_PROS : (PROS[cat]||[]);
+  document.getElementById('pros-list').innerHTML = list.map(proHTML).join('');
+}
+
+function filterPros(q){
+  if(!q){ document.getElementById('pros-list').innerHTML = ALL_PROS.map(proHTML).join(''); return; }
+  q = q.toLowerCase();
+  var m = ALL_PROS.filter(function(p){ return p.n.toLowerCase().includes(q)||p.j.toLowerCase().includes(q); });
+  document.getElementById('pros-list').innerHTML = m.length ? m.map(proHTML).join('') : '<div style="padding:30px 0;text-align:center;color:var(--ink-3);font-size:14px">Sin resultados para "'+q+'"</div>';
+}
+
+function filterJobs(cat, el){
+  document.querySelectorAll('.filter-pill').forEach(function(p){p.classList.remove('active')});
+  if(el) el.classList.add('active');
+  var list = cat==='all' ? JOBS : JOBS.filter(function(j){return j.cat===cat});
+  document.getElementById('jobs-list').innerHTML = list.map(jobHTML).join('');
+}
+
+// ── Publish ────────────────────────────────
+var PUB_CATS = {
+  empleo:['Restaurante / Hostelería','Comercio / Ventas','Salud','Educación','Construcción','Tecnología','Transporte','Otros'],
+  anuncio:['Inmuebles','Vehículos','Electrónica','Ropa / Moda','Muebles','Otros'],
+  servicio:['Gasfitería','Electricidad','Limpieza','Pintura','Carpintería','Mudanzas','Clases','Belleza','Tecnología']
+};
+var PUB_TITLES = {empleo:'Publicar empleo',anuncio:'Publicar anuncio',servicio:'Registrarme como profesional'};
+
+function setMode(mode){
+  prev = 's-home';
+  document.getElementById('pub-title').textContent = PUB_TITLES[mode]||'Publicar';
+  var sel = document.getElementById('pub-cat');
+  sel.innerHTML = '<option>Selecciona...</option>'+(PUB_CATS[mode]||[]).map(function(c){return'<option>'+c+'</option>'}).join('');
+}
+
+function setPublisher(t){
+  ['emp','part'].forEach(function(x){document.getElementById('rb-'+x).classList.remove('active')});
+  document.getElementById('rb-'+t).classList.add('active');
+}
+
+function selPlan(el, dur, price){
+  document.querySelectorAll('.price-opt').forEach(function(o){o.classList.remove('selected')});
+  el.classList.add('selected');
+  curPlan = {dur:dur, price:price};
+  document.getElementById('ok-plan').textContent = dur;
+  document.getElementById('ok-price').textContent = price;
+}
+
+function openWA(){
+  var msg = encodeURIComponent('Hola! Me interesa Conecta Ayacucho.');
+  window.open('https://wa.me/51913330712?text='+msg,'_blank');
+}
+
+// ── Init ───────────────────────────────────
+document.getElementById('pros-list').innerHTML = ALL_PROS.map(proHTML).join('');
+document.getElementById('jobs-list').innerHTML = JOBS.map(jobHTML).join('');
+document.getElementById('ads-list').innerHTML = ADS.map(adHTML).join('');
+setMode('empleo');
+</script>
+
+<script>
+// ── Supabase Config ──────────────────────
+const SUPA_URL = 'https://uhdidzbbgyrglbpszzos.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoZGlkemJiZ3lyZ2xicHN6em9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MDg0ODgsImV4cCI6MjA5ODI4NDQ4OH0.04qsqyUHdRIOSGsQMLf_yJ33haFrWsF2I59s5Oq9eDk';
+
+async function supaFetch(path, method='GET', body=null, isFile=false) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+    }
+  };
+  if (body && !isFile) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  } else if (body && isFile) {
+    opts.body = body;
+  }
+  const res = await fetch(SUPA_URL + path, opts);
+  return res;
+}
+
+// ── Upload photo ──────────────────────────
+async function uploadPhoto(file, proId) {
+  const ext = file.name.split('.').pop();
+  const filename = `pro_${proId}_${Date.now()}.${ext}`;
+  const res = await supaFetch(
+    `/storage/v1/object/photos/${filename}`,
+    'POST', file, true
+  );
+  if (res.ok) {
+    return `${SUPA_URL}/storage/v1/object/public/photos/${filename}`;
+  }
+  return null;
+}
+
+// ── Save pro profile ──────────────────────
+async function savePro(data) {
+  const res = await supaFetch('/rest/v1/profesionales', 'POST', data);
+  return res.ok;
+}
+
+// ── Load pros from DB ─────────────────────
+async function loadProsFromDB() {
+  const res = await supaFetch('/rest/v1/profesionales?select=*&order=created_at.desc');
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  }
+  return [];
+}
+</script>
+
+<!-- ══ MODAL: Registro de profesional ══ -->
+<div id="modal-registro" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:100;overflow-y:auto">
+  <div style="background:#fff;margin:20px auto;max-width:430px;border-radius:16px;overflow:hidden">
+    <div style="background:linear-gradient(135deg,#C0442A,#8B2E1A);padding:20px;color:#fff">
+      <div style="font-size:18px;font-weight:700">Registro de profesional</div>
+      <div style="font-size:13px;opacity:.8;margin-top:4px">1er mes gratis · Luego S/ 50/mes</div>
+    </div>
+    <div style="padding:20px">
+
+      <!-- Foto de perfil -->
+      <div style="margin-bottom:18px">
+        <div style="font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:8px">Foto de perfil</div>TYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Conecta — Ayacucho</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1a2e;
+  --ink-2: #3a3a5c;
+  --ink-3: #7c7c9a;
+  --ink-4: #b8b8cc;
+  --bg: #f5f5ff;
+  --white: #ffffff;
+  --line: #e8e8f4;
+  --line-2: #d8d8ee;
+  
+  --tag-bg: #EEF2FF;
+  --green: #10B981;
+  --green-bg: #ECFDF5;
+  --amber: #F59E0B;
+  --amber-bg: #FFFBEB;
+  --blue: #3B82F6;
+  --blue-bg: #EFF6FF;
+  --red: #EF4444;
+  --primary: #4F46E5;
+  --primary-l: #EEF2FF;
+  --primary-d: #3730A3;
+  --orange: #F97316;
+  --orange-l: #FFF7ED;
+  --pink: #EC4899;
+  --pink-bg: #FDF2F8;
+  --purple: #8B5CF6;
+  --purple-bg: #F5F3FF;;
+  --r: 14px;
+  --r-sm: 8px;
+  --r-pill: 100px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  background: var(--white);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── Typography ── */
+.t-hero { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2; }
+.t-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; }
+.t-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.t-body { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.t-caption { font-size: 12px; color: var(--ink-3); }
+
+/* ── Topbar ── */
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px 14px;
+  background: linear-gradient(135deg, #8B2E1A 0%, #C0442A 50%, #D4850A 100%);
+  border-bottom: none;
+  position: sticky; top: 0; z-index: 50;
+}
+.logo { font-size: 20px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px; }
+.logo em { font-style: normal; color: rgba(255,255,255,.65); font-weight: 400; }
+.back-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.2); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0; color: #fff;
+}
+.topbar-title { font-size: 16px; font-weight: 600; color: var(--ink); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.loc-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.2); border-radius: var(--r-pill);
+  padding: 5px 11px; font-size: 12px; font-weight: 600; color: #ffffff;
+  cursor: pointer;
+}
+
+/* ── Content ── */
+.content { padding: 20px; padding-bottom: 90px; }
+
+/* ── Tabs ── */
+.tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--white);
+  position: sticky; top: 57px; z-index: 40;
+  padding: 0 20px;
+}
+.tab {
+  flex: 1; padding: 13px 4px; text-align: center;
+  font-size: 13px; font-weight: 600; color: var(--ink-3);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.tab.active { color: #C0442A; border-bottom-color: #C0442A; }
+
+/* ── Search ── */
+.search-wrap { padding: 16px 20px 0; }
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--tag-bg); border-radius: var(--r);
+  padding: 12px 16px; transition: background .15s;
+}
+.search-bar:focus-within { background: #F5ECD8; }
+.search-icon { font-size: 16px; flex-shrink: 0; }
+.search-bar input {
+  border: none; background: transparent; font-size: 14px;
+  color: var(--ink); width: 100%; outline: none; font-family: inherit;
+}
+.search-bar input::placeholder { color: var(--ink-4); }
+
+/* ── Section ── */
+.section { margin-top: 24px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.see-all { font-size: 13px; font-weight: 600; color: var(--ink-3); cursor: pointer; }
+
+/* ── Category chips ── */
+.cat-scroll { display: flex; gap: 9px; overflow-x: auto; padding-bottom: 4px; margin: 0 -20px; padding: 0 20px 4px; }
+.cat-scroll::-webkit-scrollbar { display: none; }
+.cat-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  background: var(--tag-bg); border-radius: var(--r);
+  padding: 14px 12px 11px; cursor: pointer; flex-shrink: 0; width: 76px;
+  transition: background .15s, transform .1s;
+  border: 1.5px solid transparent;
+}
+.cat-chip:active { transform: scale(0.96); background: #eeecea; }
+.cat-chip.active { background: linear-gradient(135deg,#C0442A,#D4850A); border-color: #C0442A; }
+.cat-chip.active .cat-chip-label { color: var(--white); }
+.cat-emoji { font-size: 22px; }
+.cat-chip-label { font-size: 11px; font-weight: 600; color: var(--ink-2); text-align: center; line-height: 1.2; }
+
+/* ── Pro card ── */
+.pro-card {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.pro-card:last-child { border-bottom: none; }
+.pro-avatar {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; flex-shrink: 0;
+}
+.pro-body { flex: 1; min-width: 0; }
+.pro-name { font-size: 15px; font-weight: 600; color: var(--ink); }
+.pro-sub { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+.pro-meta { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+.rating { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; color: var(--ink); }
+.rating-star { font-size: 11px; }
+.badge { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--r-pill); }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); }
+.badge-ink { background: var(--tag-bg); color: var(--ink-2); }
+.pro-price { font-size: 14px; font-weight: 700; color: var(--ink); flex-shrink: 0; text-align: right; }
+.pro-price-sub { font-size: 11px; color: var(--ink-3); font-weight: 400; }
+
+/* ── Job card ── */
+.job-card {
+  border: 1.5px solid var(--line-2); border-radius: var(--r);
+  padding: 16px; margin-bottom: 10px; cursor: pointer;
+  transition: border-color .15s;
+}
+.job-card:active { border-color: #C0442A; }
+.job-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.job-logo {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  border: 1.5px solid var(--line);
+}
+.job-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.job-co { font-size: 13px; color: var(--ink-3); }
+.job-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: var(--r-pill); background: var(--tag-bg); color: var(--ink-2); }
+.chip-new { background: linear-gradient(135deg,#C0442A,#D4850A); color: var(--white); }
+.job-bottom { display: flex; align-items: center; justify-content: space-between; }
+.job-salary { font-size: 15px; font-weight: 700; color: var(--ink); }
+.job-link { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+
+/* ── Ad card ── */
+.ad-card {
+  border: 1.5px solid var(--line-2); border-radius: var(--r);
+  padding: 16px; margin-bottom: 10px; cursor: pointer;
+  transition: border-color .15s;
+}
+.ad-card:active { border-color: #C0442A; }
+.ad-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.ad-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.ad-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.ad-sub { font-size: 12px; color: var(--ink-3); }
+.ad-desc { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-bottom: 10px; }
+.ad-footer { display: flex; align-items: center; justify-content: space-between; }
+.ad-price { font-size: 16px; font-weight: 700; color: var(--ink); }
+
+/* ── Detail ── */
+.detail-hero {
+  background: var(--tag-bg);
+  padding: 28px 20px 22px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--line);
+}
+.d-avatar {
+  width: 72px; height: 72px; border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; margin-bottom: 14px;
+  border: 2px solid rgba(0,0,0,.06);
+}
+.d-name { font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.3px; }
+.d-sub { font-size: 14px; color: var(--ink-3); margin-top: 4px; }
+.d-meta { display: flex; align-items: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+.info-block { padding: 20px; border-bottom: 1px solid var(--line); }
+.info-block-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; }
+.info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.info-row:last-child { border-bottom: none; padding-bottom: 0; }
+.info-label { color: var(--ink-3); }
+.info-val { font-weight: 600; color: var(--ink); }
+
+.review { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.review:last-child { border-bottom: none; }
+.review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.review-name { font-size: 13px; font-weight: 600; }
+.review-stars { font-size: 11px; color: #f59e0b; }
+.review-text { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+/* ── Sticky bottom ── */
+.sticky-bottom {
+  position: sticky; bottom: 0;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 9px;
+  z-index: 30;
+}
+
+/* ── Buttons ── */
+.btn {
+  width: 100%; padding: 15px 20px;
+  font-size: 15px; font-weight: 700;
+  border: none; border-radius: var(--r);
+  cursor: pointer; font-family: inherit;
+  transition: opacity .15s, transform .1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn:active { opacity: .85; transform: scale(0.98); }
+.btn-dark { background: linear-gradient(135deg, #C0442A, #8B2E1A); color: var(--white); }
+.btn-light { background: var(--tag-bg); color: var(--ink); }
+.btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--line-2); }
+.btn-green { background: #15803d; color: var(--white); }
+
+/* ── Form ── */
+.form-section { padding: 20px; border-bottom: 1px solid var(--line); }
+.form-section-title { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-2); margin-bottom: 7px; }
+.form-control {
+  width: 100%; border: 1.5px solid var(--line-2);
+  border-radius: var(--r-sm); padding: 12px 14px;
+  font-size: 15px; color: var(--ink); background: var(--white);
+  font-family: inherit; transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.form-control:focus { outline: none; border-color: #C0442A; }
+textarea.form-control { resize: none; height: 90px; line-height: 1.5; }
+.radio-row { display: flex; gap: 9px; }
+.radio-opt {
+  flex: 1; padding: 11px; border: 1.5px solid var(--line-2);
+  border-radius: var(--r-sm); text-align: center; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--ink-3);
+  transition: all .15s;
+}
+.radio-opt.active { border-color: #C0442A; background: #C0442A; color: var(--white); }
+
+/* ── Pricing ── */
+.price-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.price-opt {
+  border: 1.5px solid var(--line-2); border-radius: var(--r);
+  padding: 14px 10px; text-align: center; cursor: pointer;
+  transition: all .15s; position: relative;
+}
+.price-opt.selected { border-color: #C0442A; background: linear-gradient(135deg,#C0442A,#8B2E1A); }
+.price-opt.selected .price-dur,
+.price-opt.selected .price-sol,
+.price-opt.selected .price-tag { color: var(--white); }
+.price-popular {
+  position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg,#D4850A,#C0442A); color: var(--white);
+  font-size: 9px; font-weight: 700; padding: 2px 8px;
+  border-radius: var(--r-pill); white-space: nowrap;
+}
+.price-opt.selected .price-popular { background: rgba(255,255,255,.25); }
+.price-dur { font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .04em; margin-bottom: 5px; }
+.price-sol { font-size: 22px; font-weight: 700; color: var(--ink); }
+.price-tag { font-size: 10px; color: var(--ink-3); margin-top: 3px; }
+
+/* ── Notice ── */
+.notice {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--tag-bg); border-radius: var(--r-sm);
+  padding: 12px 14px; font-size: 13px; color: var(--ink-2);
+}
+.notice-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── Success ── */
+.success-wrap { padding: 60px 28px 20px; text-align: center; }
+.success-icon { font-size: 52px; margin-bottom: 20px; display: block; }
+.success-title { font-size: 24px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 10px; }
+.success-sub { font-size: 15px; color: var(--ink-3); line-height: 1.6; }
+.success-card {
+  background: var(--tag-bg); border-radius: var(--r);
+  padding: 16px; margin: 24px 0; text-align: left;
+}
+
+/* ── Bottom nav ── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 430px;
+  background: var(--white);
+  border-top: 1px solid var(--line);
+  display: flex;
+  padding: 8px 0 calc(10px + env(safe-area-inset-bottom));
+  z-index: 60;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 4px 0; cursor: pointer; border: none; background: none;
+}
+.nav-icon { font-size: 22px; }
+.nav-label { font-size: 10px; font-weight: 600; color: var(--ink-4); letter-spacing: .02em; }
+.nav-btn.active .nav-label { color: #C0442A; }
+.nav-btn.active .nav-icon { filter: grayscale(0); }
+
+/* ── Pub FAB (center) ── */
+.nav-fab {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: linear-gradient(135deg, #C0442A, #D4850A); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--white); margin-top: -10px;
+  flex-shrink: 0;
+}
+
+/* ── Filter pills ── */
+.filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 0 20px; margin: 14px -20px 0; padding-bottom: 2px; }
+.filter-scroll::-webkit-scrollbar { display: none; }
+.filter-pill {
+  white-space: nowrap; font-size: 12px; font-weight: 600;
+  padding: 7px 14px; border-radius: var(--r-pill);
+  border: 1.5px solid var(--line-2); cursor: pointer;
+  color: var(--ink-3); background: var(--white);
+  transition: all .15s;
+}
+.filter-pill.active { background: #C0442A; color: var(--white); border-color: #C0442A; }
+
+/* ── Banner ── */
+.hero-banner {
+  background: linear-gradient(135deg, #C0442A 0%, #8B2E1A 60%, #4A2E18 100%); color: var(--white);
+  border-radius: var(--r); padding: 20px;
+  margin-bottom: 0;
+}
+.hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; opacity: .6; margin-bottom: 8px; }
+.hero-title { font-size: 21px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.25; margin-bottom: 10px; }
+.hero-sub { font-size: 13px; opacity: .7; line-height: 1.5; }
+.hero-pills { display: flex; gap: 7px; margin-top: 14px; flex-wrap: wrap; }
+.hero-pill { font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: var(--r-pill); background: rgba(255,255,255,.12); color: var(--white); }
+
+/* ── Divider ── */
+.div-line { height: 8px; background: var(--bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0; }
+
+/* ── Stats strip ── */
+.stats-strip { display: flex; padding: 16px 20px; gap: 0; border-bottom: 1px solid var(--line); }
+.stat { flex: 1; text-align: center; }
+.stat + .stat { border-left: 1px solid var(--line); }
+.stat-num { font-size: 20px; font-weight: 700; color: var(--ink); }
+.stat-lbl { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ════════════ SCREEN: HOME ════════════ -->
+<div id="s-home" class="screen active">
+  <div class="topbar">
+    <div class="logo">Conecta <em>Ayacucho</em></div>
+    <div class="topbar-right">
+      <div class="loc-pill">📍 Huamanga</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab" id="tab-p" onclick="switchTab('p')">Quiénes somos</div>
+    <div class="tab active" id="tab-s" onclick="switchTab('s')">Servicios</div>
+    <div class="tab" id="tab-e" onclick="switchTab('e')">Empleos</div>
+    <div class="tab" id="tab-a" onclick="switchTab('a')">Anuncios</div>
+  </div>
+
+  <!-- SERVICIOS -->
+  <div id="panel-s">
+    <div class="search-wrap"><div class="search-bar"><span class="search-icon">🔍</span><input placeholder="Buscar plomero, electricista..." oninput="filterPros(this.value)" id="s-search"></div></div>
+    <div class="content" style="padding-top:20px">
+      <div class="hero-banner">
+        <div class="hero-eyebrow">CONECTA AYACUCHO</div>
+        <div class="hero-title">Profesionales verificados a tu puerta</div>
+        <div class="hero-sub">Gasfiteros, electricistas, limpieza y más — en menos de 30 min.</div>
+        <div class="hero-pills">
+          <span class="hero-pill">✓ DNI verificado</span>
+          <span class="hero-pill">⭐ Con calificaciones</span>
+          <span class="hero-pill">💳 Yape / Plin</span>
+        </div>
+      </div>
+      <div class="section" style="margin-top:0">
+        <div class="t-label" style="margin-bottom:12px">Categorías</div>
+        <div class="cat-scroll">
+          <div class="cat-chip" onclick="filterCat('all',this)"><span class="cat-emoji">🔍</span><div class="cat-chip-label">Todos</div></div>
+          <div class="cat-chip" onclick="filterCat('gas',this)"><span class="cat-emoji">🔧</span><div class="cat-chip-label">Gasfitería</div></div>
+          <div class="cat-chip" onclick="filterCat('elec',this)"><span class="cat-emoji">⚡</span><div class="cat-chip-label">Electricidad</div></div>
+          <div class="cat-chip" onclick="filterCat('clean',this)"><span class="cat-emoji">🧹</span><div class="cat-chip-label">Limpieza</div></div>
+          <div class="cat-chip" onclick="filterCat('paint',this)"><span class="cat-emoji">🎨</span><div class="cat-chip-label">Pintura</div></div>
+          <div class="cat-chip" onclick="filterCat('carp',this)"><span class="cat-emoji">🪚</span><div class="cat-chip-label">Carpintería</div></div>
+          <div class="cat-chip" onclick="filterCat('beauty',this)"><span class="cat-emoji">✂️</span><div class="cat-chip-label">Belleza</div></div>
+          <div class="cat-chip" onclick="filterCat('tech',this)"><span class="cat-emoji">💻</span><div class="cat-chip-label">Tecnología</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="t-label" style="margin-bottom:0">Profesionales</div>
+        <div id="pros-list"></div>
+      </div>
+      <!-- CTA profesional -->
+      <div style="margin-top:24px;background:linear-gradient(135deg,#C0442A,#8B2E1A);border-radius:var(--r);padding:20px;color:#fff;margin-bottom:20px">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.65;margin-bottom:8px">¿ERES PROFESIONAL?</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px;line-height:1.3">Regístrate gratis y empieza a recibir clientes hoy</div>
+        <div style="font-size:13px;opacity:.8;margin-bottom:16px;line-height:1.5">🎁 Primer mes completamente gratis. Luego solo S/ 50 al mes — sin comisiones, sin límite de clientes.</div>
+        <button onclick="abrirRegistro()" style="width:100%;padding:13px;background:#fff;color:#C0442A;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Crear mi perfil gratis →</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- PRESENTACIÓN -->
+  <div id="panel-p" style="display:none">
+    <div class="content" style="padding-top:20px;padding-bottom:120px">
+
+      <!-- Hero -->
+      <div style="background:linear-gradient(135deg,#C0442A 0%,#8B2E1A 60%,#4A2E18 100%);border-radius:var(--r);padding:22px;margin-bottom:24px;color:#fff">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.65;margin-bottom:8px">QUIÉNES SOMOS</div>
+        <div style="font-size:22px;font-weight:700;letter-spacing:-0.3px;line-height:1.25;margin-bottom:10px">La plataforma local de Ayacucho</div>
+        <div style="font-size:13px;opacity:.8;line-height:1.6">Servicios a domicilio, empleos y anuncios — todo en un solo lugar, rápido y seguro.</div>
+        <div style="display:flex;gap:7px;margin-top:14px;flex-wrap:wrap">
+          <span style="font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,.15);color:#fff">✓ Verificado</span>
+          <span style="font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,.15);color:#fff">📍 100% local</span>
+          <span style="font-size:11px;font-weight:600;padding:5px 11px;border-radius:100px;background:rgba(255,255,255,.15);color:#fff">💳 Yape & Plin</span>
+        </div>
+      </div>
+
+      <!-- 3 pillars -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px">¿Qué encontrarás?</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px">
+        <div style="border:1.5px solid var(--line-2);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer" onclick="switchTab('s');document.getElementById('tab-s').click()">
+          <div style="font-size:26px;margin-bottom:8px">🔧</div>
+          <div style="font-size:12px;font-weight:700;color:#C0442A;margin-bottom:4px">Servicios</div>
+          <div style="font-size:11px;color:var(--ink-3);line-height:1.4">Profesionales a domicilio</div>
+        </div>
+        <div style="border:1.5px solid var(--line-2);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer" onclick="switchTab('e');document.getElementById('tab-e').click()">
+          <div style="font-size:26px;margin-bottom:8px">💼</div>
+          <div style="font-size:12px;font-weight:700;color:#D4850A;margin-bottom:4px">Empleos</div>
+          <div style="font-size:11px;color:var(--ink-3);line-height:1.4">Ofertas de trabajo</div>
+        </div>
+        <div style="border:1.5px solid var(--line-2);border-radius:var(--r);padding:16px 10px;text-align:center;cursor:pointer" onclick="switchTab('a');document.getElementById('tab-a').click()">
+          <div style="font-size:26px;margin-bottom:8px">📢</div>
+          <div style="font-size:12px;font-weight:700;color:#2D6A4F;margin-bottom:4px">Anuncios</div>
+          <div style="font-size:11px;color:var(--ink-3);line-height:1.4">Compra, vende, alquila</div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px">¿Cómo funciona?</div>
+      <div style="border:1.5px solid var(--line-2);border-radius:var(--r);overflow:hidden;margin-bottom:24px">
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border-bottom:1px solid var(--line)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#C0442A,#8B2E1A);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">1</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Busca lo que necesitas</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">Explora servicios a domicilio, ofertas de empleo y anuncios locales — todo en un solo lugar.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border-bottom:1px solid var(--line)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#D4850A,#B8860B);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">2</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Conecta directamente</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">Contacta al profesional, empresa o particular que más te conviene. Sin intermediarios.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px;border-bottom:1px solid var(--line)">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2D6A4F,#1A5276);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">3</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">Acuerdan juntos</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">Tú y el profesional definen los detalles, el horario y las condiciones directamente.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:16px">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7D6149,#4A2E18);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">4</div>
+          <div><div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px">¡Listo!</div><div style="font-size:13px;color:var(--ink-3);line-height:1.5">El trabajo se realiza y ambas partes quedan satisfechas. Puedes dejar tu calificación al finalizar.</div></div>
+        </div>
+      </div>
+      </div>
+
+      <!-- Stats -->
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px">Conecta en números</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:40px">
+
+        <div style="display:flex;align-items:center;gap:16px;background:var(--tag-bg);border-radius:var(--r);padding:16px 18px">
+          <div style="font-size:32px;font-weight:700;color:#C0442A;letter-spacing:-1px;flex-shrink:0;min-width:54px">9+</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Categorías de servicios</div>
+            <div style="font-size:12px;color:var(--ink-3);margin-top:2px">Gasfitería, electricidad, limpieza, clases y más</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;background:var(--tag-bg);border-radius:var(--r);padding:16px 18px">
+          <div style="font-size:32px;font-weight:700;color:#D4850A;letter-spacing:-1px;flex-shrink:0;min-width:54px">100%</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Profesionales verificados</div>
+            <div style="font-size:12px;color:var(--ink-3);margin-top:2px">DNI y antecedentes comprobados antes de publicar</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px;background:var(--tag-bg);border-radius:var(--r);padding:16px 18px">
+          <div style="font-size:32px;font-weight:700;color:#2D6A4F;letter-spacing:-1px;flex-shrink:0;min-width:54px">3</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink)">Secciones en una sola app</div>
+            <div style="font-size:12px;color:var(--ink-3);margin-top:2px">Servicios, empleos y anuncios — todo local en Ayacucho</div>
+          </div>
+        </div>
+
+
+      </div>
+
+
+
+    </div>
+  </div>
+
+  <!-- EMPLEOS -->
+  <div id="panel-e" style="display:none">
+    <div class="search-wrap"><div class="search-bar"><span class="search-icon">🔍</span><input placeholder="Buscar empleo, cargo, empresa..."></div></div>
+    <div class="filter-scroll">
+      <div class="filter-pill active" onclick="filterJobs('all',this)">Todos</div>
+      <div class="filter-pill" onclick="filterJobs('restaurante',this)">Restaurantes</div>
+      <div class="filter-pill" onclick="filterJobs('comercio',this)">Comercio</div>
+      <div class="filter-pill" onclick="filterJobs('salud',this)">Salud</div>
+      <div class="filter-pill" onclick="filterJobs('educacion',this)">Educación</div>
+      <div class="filter-pill" onclick="filterJobs('otros',this)">Otros</div>
+    </div>
+    <div class="content" style="padding-top:18px">
+      <div id="jobs-list"></div>
+      <button class="btn btn-dark" style="margin-top:6px" onclick="goTo('s-publish');setMode('empleo')">+ Publicar empleo</button>
+    </div>
+  </div>
+
+  <!-- ANUNCIOS -->
+  <div id="panel-a" style="display:none">
+    <div class="search-wrap"><div class="search-bar"><span class="search-icon">🔍</span><input placeholder="Buscar inmueble, vehículo, producto..."></div></div>
+    <div class="filter-scroll">
+      <div class="filter-pill active">Todos</div>
+      <div class="filter-pill">Inmuebles</div>
+      <div class="filter-pill">Vehículos</div>
+      <div class="filter-pill">Electrónica</div>
+      <div class="filter-pill">Ropa</div>
+    </div>
+    <div class="content" style="padding-top:18px">
+      <div id="ads-list"></div>
+      <button class="btn btn-dark" style="margin-top:6px" onclick="goTo('s-publish');setMode('anuncio')">+ Publicar anuncio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: PRO DETAIL ════════════ -->
+<div id="s-pro" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="topbar-title" id="d-topname">Perfil</span>
+  </div>
+  <div class="detail-hero">
+    <div class="d-avatar" id="d-av">CQ</div>
+    <div class="d-name" id="d-name">Carlos Quispe</div>
+    <div class="d-sub" id="d-job">Gasfitero profesional</div>
+    <div class="d-meta">
+      <span class="badge badge-green">✓ Verificado</span>
+      <span class="rating"><span class="rating-star">★</span><span id="d-rating">4.9</span></span>
+      <span class="t-caption" id="d-works">47 trabajos</span>
+    </div>
+  </div>
+  <div class="stats-strip">
+    <div class="stat"><div class="stat-num" id="d-stat-w">47</div><div class="stat-lbl">Trabajos</div></div>
+    <div class="stat"><div class="stat-num" id="d-stat-r">4.9</div><div class="stat-lbl">Calificación</div></div>
+    <div class="stat"><div class="stat-num">15'</div><div class="stat-lbl">Responde</div></div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Detalles</div>
+  
+    <div class="info-row"><span class="info-label">Zona de trabajo</span><span class="info-val">Ayacucho completo</span></div>
+    <div class="info-row"><span class="info-label">Pago aceptado</span><span class="info-val">Yape · Plin · Efectivo</span></div>
+    <div class="info-row"><span class="info-label">Disponibilidad</span><span class="info-val" style="color:var(--green)">Disponible hoy</span></div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Opiniones recientes</div>
+    <div class="review"><div class="review-top"><span class="review-name">María T.</span><span class="review-stars">★★★★★</span></div><div class="review-text">Llegó en 20 minutos, muy profesional y dejó todo limpio.</div></div>
+    <div class="review"><div class="review-top"><span class="review-name">Pedro L.</span><span class="review-stars">★★★★★</span></div><div class="review-text">Excelente trabajo, precio justo. Lo recomendaría a todos.</div></div>
+    <div class="review"><div class="review-top"><span class="review-name">Carmen R.</span><span class="review-stars">★★★★☆</span></div><div class="review-text">Muy puntual y explicó bien el problema antes de empezar.</div></div>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="goTo('s-request')">Solicitar servicio</button>
+    <button class="btn btn-light" onclick="openWA()">📱 Contactar por WhatsApp</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: JOB DETAIL ════════════ -->
+<div id="s-job" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="topbar-title">Oferta de empleo</span>
+  </div>
+  <div class="detail-hero" id="j-hero">
+    <div style="font-size:38px;margin-bottom:14px" id="j-icon">🍽</div>
+    <div class="d-name" id="j-title">Mozo / Mesero</div>
+    <div class="d-sub" id="j-co">Restaurante La Casona</div>
+    <div class="d-meta">
+      <span class="badge badge-ink" id="j-tipo">Empresa</span>
+      <span class="badge badge-green" id="j-horario">Tiempo completo</span>
+    </div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Condiciones</div>
+    <div class="info-row"><span class="info-label">Salario</span><span class="info-val" id="j-sal">S/ 1,200/mes</span></div>
+    <div class="info-row"><span class="info-label">Ubicación</span><span class="info-val">Ayacucho, Huamanga</span></div>
+    <div class="info-row"><span class="info-label">Publicado</span><span class="info-val" id="j-date">Hace 2 días</span></div>
+  </div>
+  <div class="info-block">
+    <div class="info-block-title">Descripción</div>
+    <p class="t-body" id="j-desc" style="margin-bottom:16px"></p>
+    <div class="info-block-title">Requisitos</div>
+    <p class="t-body" id="j-reqs"></p>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="openWA()">Postular ahora</button>
+    <button class="btn btn-light" onclick="openWA()">📱 Preguntar por WhatsApp</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: REQUEST ════════════ -->
+<div id="s-request" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('s-pro')">←</button>
+    <span class="topbar-title">Solicitar servicio</span>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">¿Qué necesitas?</div>
+    <div class="form-group"><label class="form-label">Tipo de trabajo</label><select class="form-control"><option>Reparación urgente</option><option>Instalación nueva</option><option>Mantenimiento</option><option>Presupuesto</option></select></div>
+    <div class="form-group"><label class="form-label">¿Cuándo?</label><select class="form-control"><option>Hoy mismo</option><option>Mañana</option><option>Esta semana</option></select></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Tu información</div>
+    <div class="form-group"><label class="form-label">Dirección en Ayacucho</label><input type="text" class="form-control" placeholder="Jr. Lima 245, Huamanga"></div>
+    <div class="form-group"><label class="form-label">Celular (WhatsApp)</label><input type="tel" class="form-control" placeholder="987 654 321"></div>
+    <div class="form-group"><label class="form-label">Describe el problema</label><textarea class="form-control" placeholder="Cuéntanos qué necesitas con detalle..."></textarea></div>
+    <div class="form-group"><label class="form-label">Pago preferido</label><select class="form-control"><option>Yape</option><option>Plin</option><option>Efectivo</option></select></div>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="goTo('s-ok-req')">Enviar solicitud</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: PUBLISH ════════════ -->
+<div id="s-publish" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <span class="topbar-title" id="pub-title">Publicar anuncio</span>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">¿Quién publica?</div>
+    <div class="radio-row">
+      <div class="radio-opt active" id="rb-emp" onclick="setPublisher('emp')">🏢 Empresa</div>
+      <div class="radio-opt" id="rb-part" onclick="setPublisher('part')">👤 Particular</div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Información del anuncio</div>
+    <div class="form-group"><label class="form-label">Nombre de empresa / tu nombre</label><input type="text" class="form-control" placeholder="Ej: Restaurante La Casona"></div>
+    <div class="form-group"><label class="form-label">Categoría</label><select class="form-control" id="pub-cat"><option>Selecciona...</option></select></div>
+    <div class="form-group"><label class="form-label">Título</label><input type="text" class="form-control" placeholder="Ej: Se busca mozo con experiencia"></div>
+    <div class="form-group"><label class="form-label">Descripción completa</label><textarea class="form-control" placeholder="Detalla el puesto, requisitos, condiciones..."></textarea></div>
+
+      <div class="form-group">
+        <label class="form-label">Fotos del anuncio <span style="color:var(--ink-3);font-weight:400">(opcional · máx. 3)</span></label>
+        <div id="fotos-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"></div>
+        <label for="pub-fotos-input" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);cursor:pointer;background:var(--tag-bg)">
+          <span style="font-size:22px">📷</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink)">Agregar fotos</div>
+            <div style="font-size:11px;color:var(--ink-3)">JPG o PNG · máx. 5MB por foto</div>
+          </div>
+        </label>
+        <input type="file" id="pub-fotos-input" accept="image/*" multiple style="display:none" onchange="previewAnuncioFotos(this)">
+      </div>
+    <div class="form-group"><label class="form-label">Salario / Precio (opcional)</label><input type="text" class="form-control" placeholder="Ej: S/ 1,200 / mes"></div>
+    <div class="form-group"><label class="form-label">Celular WhatsApp</label><input type="tel" class="form-control" placeholder="913 330 712"></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Duración del anuncio</div>
+    <div class="price-row" style="margin-bottom:16px">
+      <div class="price-opt" onclick="selPlan(this,'7 días','S/15')">
+        <div class="price-dur">7 DÍAS</div>
+        <div class="price-sol">S/15</div>
+        <div class="price-tag">Básico</div>
+      </div>
+      <div class="price-opt selected" onclick="selPlan(this,'15 días','S/25')">
+        <div class="price-popular">MÁS POPULAR</div>
+        <div class="price-dur">15 DÍAS</div>
+        <div class="price-sol">S/25</div>
+        <div class="price-tag">Recomendado</div>
+      </div>
+      <div class="price-opt" onclick="selPlan(this,'30 días','S/40')">
+        <div class="price-dur">30 DÍAS</div>
+        <div class="price-sol">S/40</div>
+        <div class="price-tag">Destacado</div>
+      </div>
+    </div>
+    <div class="notice">
+      <span class="notice-icon">ℹ️</span>
+      <span>Tras el pago por <strong>Yape al 913 330 712</strong>, tu anuncio se publica en menos de 1 hora.</span>
+    </div>
+  </div>
+  <div style="height:90px"></div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" id="pub-submit-btn" onclick="publicarAnuncioConFotos()">Pagar y publicar</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: OK REQUEST ════════════ -->
+<div id="s-ok-req" class="screen">
+  <div class="topbar" style="border:none"></div>
+  <div class="success-wrap">
+    <span class="success-icon">✅</span>
+    <div class="success-title">Solicitud enviada</div>
+    <div class="success-sub">El profesional te contactará en menos de 15 minutos por WhatsApp.</div>
+    <div class="success-card">
+      <div class="info-row" style="padding-top:0"><span class="info-label">Profesional</span><span class="info-val" id="ok-pro">—</span></div>
+      <div class="info-row"><span class="info-label">Comisión Conecta</span><span class="info-val" style="color:var(--green)">15%</span></div>
+      <div class="info-row" style="padding-bottom:0;border:none"><span class="info-label">Estado</span><span class="info-val" style="color:var(--amber)">Notificando...</span></div>
+    </div>
+  </div>
+  <div class="sticky-bottom">
+    <button class="btn btn-green" onclick="openWA()">📱 Seguir por WhatsApp</button>
+    <button class="btn btn-light" onclick="goTo('s-home')">Volver al inicio</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: OK PUBLISH ════════════ -->
+<div id="s-ok-pub" class="screen">
+  <div class="topbar" style="border:none"></div>
+  <div class="success-wrap">
+    <span class="success-icon">📢</span>
+    <div class="success-title">¡Anuncio publicado!</div>
+    <div class="success-sub">Tu anuncio ya es visible para todos los usuarios de Conecta Ayacucho.</div>
+    <div class="success-card">
+      <div class="info-row" style="padding-top:0"><span class="info-label">Duración</span><span class="info-val" id="ok-plan">15 días</span></div>
+      <div class="info-row"><span class="info-label">Precio pagado</span><span class="info-val" id="ok-price">S/25</span></div>
+      <div class="info-row" style="padding-bottom:0;border:none"><span class="info-label">Estado</span><span class="info-val" style="color:var(--green)">Activo ✓</span></div>
+    </div>
+  </div>
+  <div class="sticky-bottom">
+    <button class="btn btn-dark" onclick="goTo('s-home')">Ver inicio</button>
+    <button class="btn btn-light" onclick="goTo('s-publish')">Publicar otro</button>
+  </div>
+</div>
+
+<!-- ════════════ SCREEN: MI CUENTA ════════════ -->
+<div id="s-cuenta" class="screen">
+  <div class="topbar">
+    <div class="logo">Conecta <em>Ayacucho</em></div>
+  </div>
+  <div class="content">
+    <div style="padding:10px 0 24px">
+      <div class="t-hero">Hola 👋</div>
+      <div class="t-body" style="margin-top:6px">Gestiona tus anuncios y solicitudes</div>
+    </div>
+    <div class="t-label" style="margin-bottom:12px">Mis anuncios</div>
+    <div style="background:var(--tag-bg);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:20px">
+      <div style="font-size:28px;margin-bottom:8px">📋</div>
+      <div style="font-size:14px;color:var(--ink-3)">Aún no tienes anuncios publicados.</div>
+    </div>
+    <button class="btn btn-dark" style="margin-bottom:10px" onclick="goTo('s-publish')">+ Publicar anuncio o empleo</button>
+    <div class="div-line" style="margin:24px -20px"></div>
+    <div class="t-label" style="margin-bottom:12px;margin-top:20px">Opciones</div>
+    <div class="info-row" style="cursor:pointer" onclick="openWA()"><span style="font-size:14px;color:var(--ink-2)">Soporte WhatsApp</span><span style="color:var(--ink-3)">→</span></div>
+    <div class="info-row" style="cursor:pointer" onclick="goTo('s-publish');setMode('empleo')"><span style="font-size:14px;color:var(--ink-2)">Publicar empleo</span><span style="color:var(--ink-3)">→</span></div>
+    <div class="info-row" style="cursor:pointer" onclick="goTo('s-publish');setMode('servicio')"><span style="font-size:14px;color:var(--ink-2)">Registrarme como profesional</span><span style="color:var(--ink-3)">→</span></div>
+    <div class="info-row" style="cursor:pointer;border:none"><span style="font-size:14px;color:var(--ink-2)">Preguntas frecuentes</span><span style="color:var(--ink-3)">→</span></div>
+  </div>
+</div>
+
+<!-- ════════════ BOTTOM NAV ════════════ -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nb-home" onclick="navTo('s-home','nb-home')"><span class="nav-icon">🏠</span><div class="nav-label">Inicio</div></button>
+  <button class="nav-btn" id="nb-emp" onclick="navTo('s-home','nb-emp');switchTab('e')"><span class="nav-icon">💼</span><div class="nav-label">Empleos</div></button>
+  <button class="nav-fab" onclick="goTo('s-publish')">＋</button>
+  <button class="nav-btn" id="nb-ann" onclick="navTo('s-home','nb-ann');switchTab('a')"><span class="nav-icon">📢</span><div class="nav-label">Anuncios</div></button>
+  <button class="nav-btn" id="nb-acc" onclick="navTo('s-cuenta','nb-acc')"><span class="nav-icon">👤</span><div class="nav-label">Cuenta</div></button>
+</nav>
+</div>
+
+<script>
+// ── Data ───────────────────────────────────
+var PROS = {
+  gas:[{n:'Carlos Quispe',j:'Gasfitero profesional',r:4.9,w:47,av:'CQ',c1:'#f0f0ee',c2:'#1a1a1a'},{n:'Miguel Ccari',j:'Gasfitero · 10 años exp.',r:4.7,w:29,av:'MC',c1:'#FDF3DC',c2:'#D4850A'}],
+  elec:[{n:'Juan Huamán',j:'Electricista certificado',r:4.7,w:31,av:'JH',c1:'#FEF9E7',c2:'#B8860B'},{n:'Luis Palomino',j:'Electricista residencial',r:4.6,w:18,av:'LP',c1:'#E8F4F8',c2:'#1A5276'}],
+  clean:[{n:'Rosa Mendoza',j:'Limpieza del hogar',r:4.8,w:63,av:'RM',c1:'#E8F5EE',c2:'#2D6A4F'},{n:'Ana Sulca',j:'Limpieza profunda',r:4.9,w:41,av:'AS',c1:'#F0EBE3',c2:'#7D6149'}],
+  paint:[{n:'Pedro Flores',j:'Pintor de interiores',r:4.6,w:22,av:'PF',c1:'#FAEAE6',c2:'#8B2E1A'}],
+  carp:[{n:'David Ore',j:'Carpintero de muebles',r:4.8,w:15,av:'DO',c1:'#FDF3DC',c2:'#B8860B'}],
+  beauty:[{n:'Carla Huayta',j:'Estilista a domicilio',r:4.9,w:88,av:'CH',c1:'#E8F5EE',c2:'#2D6A4F'}],
+  tech:[{n:'Marco Rojas',j:'Técnico PC y celulares',r:4.7,w:44,av:'MR',c1:'#FAEAE6',c2:'#C0442A'}]
+};
+
+var ALL_PROS = [];
+Object.keys(PROS).forEach(function(k){ PROS[k].forEach(function(p){ ALL_PROS.push(Object.assign({},p,{cat:k})); }); });
+
+var JOBS = [
+  {id:1,title:'Mozo / Mesero',co:'Restaurante La Casona',icon:'🍽',cat:'restaurante',tipo:'Empresa',horario:'Tiempo completo',sal:'S/ 1,200/mes',date:'Hace 2 días',desc:'Buscamos mozo/a con experiencia mínima de 6 meses en restaurantes. Buen trato al cliente, puntualidad y trabajo en equipo. Ofrecemos sueldo fijo más propinas y alimentación.',reqs:'• Experiencia mínima 6 meses\n• Disponibilidad inmediata\n• DNI vigente\n• Actitud positiva',nuevo:false},
+  {id:2,title:'Cajero/a',co:'Tienda El Progreso',icon:'🛒',cat:'comercio',tipo:'Empresa',horario:'Tiempo completo',sal:'S/ 950/mes',date:'Hace 1 día',desc:'Tienda de abarrotes busca cajero/a con experiencia en manejo de caja registradora y atención al cliente.',reqs:'• Experiencia en caja\n• Honestidad comprobable\n• Disponibilidad inmediata',nuevo:false},
+  {id:3,title:'Enfermero/a técnico',co:'Clínica San Juan',icon:'🏥',cat:'salud',tipo:'Empresa',horario:'Turnos rotativos',sal:'S/ 1,500/mes',date:'Hace 3 días',desc:'Clínica privada necesita enfermero/a técnico titulado para área de hospitalización. Experiencia mínima 1 año.',reqs:'• Título técnico en enfermería\n• Colegiatura vigente\n• 1 año de experiencia mínimo',nuevo:false},
+  {id:4,title:'Profesor/a de matemáticas',co:'Colegio Los Andes',icon:'📚',cat:'educacion',tipo:'Empresa',horario:'Tiempo completo',sal:'S/ 1,800/mes',date:'Hace 5 días',desc:'Institución educativa requiere docente de matemáticas para nivel secundaria con título pedagógico.',reqs:'• Título pedagógico o licenciatura afín\n• Experiencia docente mínima 2 años\n• Responsabilidad y vocación de servicio',nuevo:false},
+  {id:5,title:'Repartidor con moto',co:'Pizzería Napoli',icon:'🍕',cat:'restaurante',tipo:'Empresa',horario:'Medio tiempo',sal:'S/ 800 + comisiones',date:'Hoy',desc:'Pizzería busca repartidor con moto propia para delivery. Zona céntrica de Huamanga. Horario: 6pm–11pm.',reqs:'• Moto propia y licencia de conducir\n• Conocer Ayacucho\n• Responsabilidad y puntualidad',nuevo:true},
+  {id:6,title:'Vendedor/a de tienda',co:'Particular – María G.',icon:'👗',cat:'comercio',tipo:'Particular',horario:'Tiempo completo',sal:'S/ 900/mes',date:'Hace 2 días',desc:'Busco vendedora para tienda de ropa en mercado central. Con experiencia en ventas y buena presencia.',reqs:'• Experiencia en ventas\n• Buena presencia\n• Trato amable con clientes',nuevo:false},
+];
+
+var ADS = [
+  {id:1,title:'Alquilo local comercial 80m²',icon:'🏠',price:'S/ 1,200/mes',tipo:'Particular',date:'Hoy',desc:'Local en Jr. Lima, zona céntrica, ideal para tienda o restaurante. Con baño y acceso directo a calle principal.',nuevo:true},
+  {id:2,title:'Vendo moto Honda 150cc 2022',icon:'🏍',price:'S/ 8,500',tipo:'Particular',date:'Hace 1 día',desc:'Moto en excelente estado, 15,000 km. SOAT vigente, documentos al día. Solo uso particular.',nuevo:false},
+  {id:3,title:'iPhone 13 Pro 256GB',icon:'📱',price:'S/ 2,800',tipo:'Particular',date:'Hoy',desc:'iPhone en perfecto estado, caja original, accesorios incluidos. Color azul sierra. Garantía vigente.',nuevo:true},
+  {id:4,title:'Clases de inglés — desde S/50/mes',icon:'📚',price:'S/ 50/mes',tipo:'Empresa',date:'Hace 3 días',desc:'Clases de inglés básico a avanzado. Grupos pequeños, horarios flexibles mañana y tarde. Certificado al finalizar.',nuevo:false},
+  {id:5,title:'Departamento amoblado 2 habitaciones',icon:'🏢',price:'S/ 700/mes',tipo:'Particular',date:'Hace 2 días',desc:'Dpto amoblado, 2 habitaciones, cocina equipada, baño. Barrio Santa Elena. Agua y luz incluidas.',nuevo:false},
+];
+
+// ── State ──────────────────────────────────
+var prev = 's-home';
+var curPlan = {dur:'15 días', price:'S/25'};
+var curPro = null;
+
+// ── Nav ────────────────────────────────────
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goBack(){ goTo(prev); }
+function navTo(sid,nid){
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});
+  document.getElementById(nid).classList.add('active');
+  goTo(sid);
+}
+function switchTab(t){
+  ['s','p','e','a'].forEach(function(x){
+    document.getElementById('tab-'+x).classList.remove('active');
+    document.getElementById('panel-'+x).style.display='none';
+  });
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('panel-'+t).style.display='block';
+}
+
+// ── Render ─────────────────────────────────
+function proHTML(p){
+  return '<div class="pro-card" onclick="showPro(\''+p.n+'\',\''+p.j+'\','+p.r+','+p.w+',\''+p.p+'\',\''+p.av+'\',\''+p.c1+'\',\''+p.c2+'\')">'
+    +'<div class="pro-avatar" style="background:'+p.c1+';color:'+p.c2+'">'+p.av+'</div>'
+    +'<div class="pro-body">'
+    +'<div class="pro-name">'+p.n+'</div>'
+    +'<div class="pro-sub">'+p.j+'</div>'
+    +'<div class="pro-meta"><span class="rating"><span class="rating-star">★</span>'+p.r+'</span><span class="badge badge-green">✓ Verificado</span><span class="t-caption">'+p.w+' trabajos</span></div>'
+    +'</div>'
+    
+    +'</div>';
+}
+
+function jobHTML(j){
+  return '<div class="job-card" onclick="showJob('+j.id+')">'
+    +'<div class="job-top">'
+    +'<div class="job-logo">'+j.icon+'</div>'
+    +'<div><div class="job-title">'+j.title+(j.nuevo?' <span class="chip chip-new">NUEVO</span>':'')+'</div>'
+    +'<div class="job-co">'+j.co+'</div></div>'
+    +'</div>'
+    +'<div class="job-chips">'
+    +'<span class="chip">'+j.tipo+'</span>'
+    +'<span class="chip">'+j.horario+'</span>'
+    +'<span class="chip">'+j.date+'</span>'
+    +'</div>'
+    +'<div class="job-bottom"><span class="job-salary">'+j.sal+'</span><span class="job-link">Ver detalles →</span></div>'
+    +'</div>';
+}
+
+function adHTML(a){
+  return '<div class="ad-card" onclick="alert(\'Anuncio: \'+\''+a.title+'\')">'
+    +'<div class="ad-header">'
+    +'<div class="ad-icon">'+a.icon+'</div>'
+    +'<div><div class="ad-title">'+a.title+(a.nuevo?' <span class="chip chip-new" style="font-size:10px;padding:2px 7px">HOY</span>':'')+'</div>'
+    +'<div class="ad-sub">'+a.tipo+' · '+a.date+'</div></div>'
+    +'</div>'
+    +'<div class="ad-desc">'+a.desc.substring(0,90)+'...</div>'
+    +'<div class="ad-footer"><span class="ad-price">'+a.price+'</span><span class="job-link">Ver más →</span></div>'
+    +'</div>';
+}
+
+// ── Show detail ────────────────────────────
+function showPro(n,j,r,w,p,av,c1,c2){
+  prev = document.querySelector('.screen.active').id;
+  curPro = n;
+  document.getElementById('d-topname').textContent = n;
+  document.getElementById('d-av').textContent = av;
+  document.getElementById('d-av').style.background = c1;
+  document.getElementById('d-av').style.color = c2;
+  document.getElementById('d-name').textContent = n;
+  document.getElementById('d-job').textContent = j;
+  document.getElementById('d-rating').textContent = r;
+  document.getElementById('d-works').textContent = w+' trabajos';
+  
+  document.getElementById('d-stat-w').textContent = w;
+  document.getElementById('d-stat-r').textContent = r;
+  document.getElementById('ok-pro').textContent = n;
+  goTo('s-pro');
+}
+
+function showJob(id){
+  prev = document.querySelector('.screen.active').id;
+  var j = JOBS.find(function(x){return x.id===id});
+  if(!j) return;
+  document.getElementById('j-icon').textContent = j.icon;
+  document.getElementById('j-title').textContent = j.title;
+  document.getElementById('j-co').textContent = j.co;
+  document.getElementById('j-tipo').textContent = j.tipo;
+  document.getElementById('j-horario').textContent = j.horario;
+  document.getElementById('j-sal').textContent = j.sal;
+  document.getElementById('j-date').textContent = j.date;
+  document.getElementById('j-desc').textContent = j.desc;
+  document.getElementById('j-reqs').innerHTML = j.reqs.replace(/\n/g,'<br>');
+  goTo('s-job');
+}
+
+// ── Filters ────────────────────────────────
+function filterCat(cat, el){
+  document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active')});
+  el.classList.add('active');
+  var list = cat==='all' ? ALL_PROS : (PROS[cat]||[]);
+  document.getElementById('pros-list').innerHTML = list.map(proHTML).join('');
+}
+
+function filterPros(q){
+  if(!q){ document.getElementById('pros-list').innerHTML = ALL_PROS.map(proHTML).join(''); return; }
+  q = q.toLowerCase();
+  var m = ALL_PROS.filter(function(p){ return p.n.toLowerCase().includes(q)||p.j.toLowerCase().includes(q); });
+  document.getElementById('pros-list').innerHTML = m.length ? m.map(proHTML).join('') : '<div style="padding:30px 0;text-align:center;color:var(--ink-3);font-size:14px">Sin resultados para "'+q+'"</div>';
+}
+
+function filterJobs(cat, el){
+  document.querySelectorAll('.filter-pill').forEach(function(p){p.classList.remove('active')});
+  if(el) el.classList.add('active');
+  var list = cat==='all' ? JOBS : JOBS.filter(function(j){return j.cat===cat});
+  document.getElementById('jobs-list').innerHTML = list.map(jobHTML).join('');
+}
+
+// ── Publish ────────────────────────────────
+var PUB_CATS = {
+  empleo:['Restaurante / Hostelería','Comercio / Ventas','Salud','Educación','Construcción','Tecnología','Transporte','Otros'],
+  anuncio:['Inmuebles','Vehículos','Electrónica','Ropa / Moda','Muebles','Otros'],
+  servicio:['Gasfitería','Electricidad','Limpieza','Pintura','Carpintería','Mudanzas','Clases','Belleza','Tecnología']
+};
+var PUB_TITLES = {empleo:'Publicar empleo',anuncio:'Publicar anuncio',servicio:'Registrarme como profesional'};
+
+function setMode(mode){
+  prev = 's-home';
+  document.getElementById('pub-title').textContent = PUB_TITLES[mode]||'Publicar';
+  var sel = document.getElementById('pub-cat');
+  sel.innerHTML = '<option>Selecciona...</option>'+(PUB_CATS[mode]||[]).map(function(c){return'<option>'+c+'</option>'}).join('');
+}
+
+function setPublisher(t){
+  ['emp','part'].forEach(function(x){document.getElementById('rb-'+x).classList.remove('active')});
+  document.getElementById('rb-'+t).classList.add('active');
+}
+
+function selPlan(el, dur, price){
+  document.querySelectorAll('.price-opt').forEach(function(o){o.classList.remove('selected')});
+  el.classList.add('selected');
+  curPlan = {dur:dur, price:price};
+  document.getElementById('ok-plan').textContent = dur;
+  document.getElementById('ok-price').textContent = price;
+}
+
+function openWA(){
+  var msg = encodeURIComponent('Hola! Me interesa Conecta Ayacucho.');
+  window.open('https://wa.me/51913330712?text='+msg,'_blank');
+}
+
+// ── Init ───────────────────────────────────
+document.getElementById('pros-list').innerHTML = ALL_PROS.map(proHTML).join('');
+document.getElementById('jobs-list').innerHTML = JOBS.map(jobHTML).join('');
+document.getElementById('ads-list').innerHTML = ADS.map(adHTML).join('');
+setMode('empleo');
+</script>
+
+<script>
+// ── Supabase Config ──────────────────────
+const SUPA_URL = 'https://uhdidzbbgyrglbpszzos.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoZGlkemJiZ3lyZ2xicHN6em9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MDg0ODgsImV4cCI6MjA5ODI4NDQ4OH0.04qsqyUHdRIOSGsQMLf_yJ33haFrWsF2I59s5Oq9eDk';
+
+async function supaFetch(path, method='GET', body=null, isFile=false) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+    }
+  };
+  if (body && !isFile) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  } else if (body && isFile) {
+    opts.body = body;
+  }
+  const res = await fetch(SUPA_URL + path, opts);
+  return res;
+}
+
+// ── Upload photo ──────────────────────────
+async function uploadPhoto(file, proId) {
+  const ext = file.name.split('.').pop();
+  const filename = `pro_${proId}_${Date.now()}.${ext}`;
+  const res = await supaFetch(
+    `/storage/v1/object/photos/${filename}`,
+    'POST', file, true
+  );
+  if (res.ok) {
+    return `${SUPA_URL}/storage/v1/object/public/photos/${filename}`;
+  }
+  return null;
+}
+
+// ── Save pro profile ──────────────────────
+async function savePro(data) {
+  const res = await supaFetch('/rest/v1/profesionales', 'POST', data);
+  return res.ok;
+}
+
+// ── Load pros from DB ─────────────────────
+async function loadProsFromDB() {
+  const res = await supaFetch('/rest/v1/profesionales?select=*&order=created_at.desc');
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  }
+  return [];
+}
+</script>
+
+<!-- ══ MODAL: Registro de profesional ══ -->
+<div id="modal-registro" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:100;overflow-y:auto">
+  <div style="background:#fff;margin:20px auto;max-width:430px;border-radius:16px;overflow:hidden">
+    <div style="background:linear-gradient(135deg,#C0442A,#8B2E1A);padding:20px;color:#fff">
+      <div style="font-size:18px;font-weight:700">Registro de profesional</div>
+      <div style="font-size:13px;opacity:.8;margin-top:4px">1er mes gratis · Luego S/ 50/mes</div>
+    </div>
+    <div style="padding:20px">
+
+      <!-- Foto de perfil -->
+      <div style="margin-bottom:18px">
+        <div style="font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:8px">Foto de perfil</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div id="foto-preview" style="width:72px;height:72px;border-radius:50%;background:#F5ECD8;border:2px dashed #DFC9A8;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden">👤</div>
+          <div>
+            <label for="foto-input" style="display:inline-block;padding:9px 16px;background:#F5ECD8;border-radius:8px;font-size:13px;font-weight:600;color:#C0442A;cursor:pointer">📷 Elegir foto</label>
+            <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="previewFoto(this)">
+            <div style="font-size:11px;color:#8B6347;margin-top:5px">JPG o PNG · máx. 5MB</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:6px">Nombre completo *</label>
+        <input type="text" id="reg-nombre" placeholder="Ej: Carlos Quispe" style="width:100%;border:1.5px solid #DFC9A8;border-radius:8px;padding:11px 13px;font-size:15px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:6px">Especialidad *</label>
+        <select id="reg-cat" style="width:100%;border:1.5px solid #DFC9A8;border-radius:8px;padding:11px 13px;font-size:15px;font-family:inherit;background:#fff">
+          <option value="">Selecciona...</option>
+          <option>Gasfitero</option><option>Electricista</option><option>Limpieza</option>
+          <option>Pintor</option><option>Carpintero</option><option>Mudanzas</option>
+          <option>Profesor/a</option><option>Estilista</option><option>Técnico en tecnología</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:6px">Descripción breve</label>
+        <textarea id="reg-desc" placeholder="Cuéntanos tu experiencia..." style="width:100%;border:1.5px solid #DFC9A8;border-radius:8px;padding:11px 13px;font-size:14px;font-family:inherit;resize:none;height:75px"></textarea>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:6px">Celular WhatsApp *</label>
+        <input type="tel" id="reg-cel" placeholder="913 330 712" style="width:100%;border:1.5px solid #DFC9A8;border-radius:8px;padding:11px 13px;font-size:15px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:13px;font-weight:600;color:#4A2E18;margin-bottom:6px">Años de experiencia</label>
+        <select id="reg-exp" style="width:100%;border:1.5px solid #DFC9A8;border-radius:8px;padding:11px 13px;font-size:15px;font-family:inherit;background:#fff">
+          <option>Menos de 1 año</option><option>1–2 años</option><option>3–5 años</option><option>Más de 5 años</option>
+        </select>
+      </div>
+
+      <div id="reg-msg" style="display:none;padding:12px;border-radius:8px;font-size:13px;margin-bottom:14px"></div>
+
+      <button onclick="registrarPro()" style="width:100%;padding:14px;background:linear-gradient(135deg,#C0442A,#8B2E1A);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit" id="reg-btn">Crear mi perfil</button>
+      <button onclick="document.getElementById('modal-registro').style.display='none'" style="width:100%;padding:12px;background:#F5ECD8;color:#4A2E18;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:9px">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function previewFoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById('foto-preview');
+    preview.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover">';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function registrarPro() {
+  const btn = document.getElementById('reg-btn');
+  const msg = document.getElementById('reg-msg');
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const cat = document.getElementById('reg-cat').value;
+  const cel = document.getElementById('reg-cel').value.trim();
+  const desc = document.getElementById('reg-desc').value.trim();
+  const exp = document.getElementById('reg-exp').value;
+  const fotoFile = document.getElementById('foto-input').files[0];
+
+  if (!nombre || !cat || !cel) {
+    msg.style.display='block';
+    msg.style.background='#FAEAE6';
+    msg.style.color='#C0442A';
+    msg.textContent='Por favor completa los campos obligatorios (*)';
+    return;
+  }
+
+  btn.textContent = '⏳ Guardando...';
+  btn.disabled = true;
+
+  try {
+    let fotoUrl = null;
+    if (fotoFile) {
+      fotoUrl = await uploadPhoto(fotoFile, nombre.replace(/\s/g,'_').toLowerCase());
+    }
+
+    const proData = {
+      nombre, categoria: cat, descripcion: desc,
+      celular: cel, experiencia: exp,
+      foto_url: fotoUrl,
+      verificado: false,
+      created_at: new Date().toISOString()
+    };
+
+    const ok = await savePro(proData);
+    if (ok) {
+      msg.style.display='block';
+      msg.style.background='#E8F5EE';
+      msg.style.color='#2D6A4F';
+      msg.textContent='✅ ¡Perfil creado! Te contactaremos para verificar tu cuenta.';
+      btn.textContent = '✓ ¡Listo!';
+      setTimeout(function(){
+        document.getElementById('modal-registro').style.display='none';
+        btn.textContent='Crear mi perfil';
+        btn.disabled=false;
+      }, 2500);
+    } else {
+      throw new Error('Error al guardar');
+    }
+  } catch(e) {
+    msg.style.display='block';
+    msg.style.background='#FAEAE6';
+    msg.style.color='#C0442A';
+    msg.textContent='❌ Error al guardar. Por favor intenta de nuevo.';
+    btn.textContent='Crear mi perfil';
+    btn.disabled=false;
+  }
+}
+
+function abrirRegistro() {
+  document.getElementById('modal-registro').style.display='block';
+}
+</script>
+
+
+<script>
+var anuncioFotos = [];
+
+function previewAnuncioFotos(input) {
+  const files = Array.from(input.files).slice(0, 3);
+  anuncioFotos = files;
+  const preview = document.getElementById('fotos-preview');
+  preview.innerHTML = '';
+  files.forEach(function(file, i) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const div = document.createElement('div');
+      div.style.cssText = 'position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;border:1.5px solid var(--line-2)';
+      div.innerHTML = '<img src="'+e.target.result+'" style="width:100%;height:100%;object-fit:cover">'
+        + '<button onclick="removeAnuncioFoto('+i+')" style="position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;border:none;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center;padding:0">✕</button>';
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removeAnuncioFoto(index) {
+  anuncioFotos.splice(index, 1);
+  const dt = new DataTransfer();
+  anuncioFotos.forEach(function(f){ dt.items.add(f); });
+  document.getElementById('pub-fotos-input').files = dt.files;
+  previewAnuncioFotos(document.getElementById('pub-fotos-input'));
+}
+
+async function publicarAnuncioConFotos() {
+  const btn = document.getElementById('pub-submit-btn');
+  if (!btn) { goTo('s-ok-pub'); return; }
+  
+  btn.textContent = '⏳ Publicando...';
+  btn.disabled = true;
+
+  try {
+    const fotoUrls = [];
+    for (let i = 0; i < anuncioFotos.length; i++) {
+      const file = anuncioFotos[i];
+      const ext = file.name.split('.').pop();
+      const filename = 'anuncio_' + Date.now() + '_' + i + '.' + ext;
+      const res = await fetch(SUPA_URL + '/storage/v1/object/photos/' + filename, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPA_KEY,
+          'Authorization': 'Bearer ' + SUPA_KEY,
+        },
+        body: file
+      });
+      if (res.ok) {
+        fotoUrls.push(SUPA_URL + '/storage/v1/object/public/photos/' + filename);
+      }
+    }
+
+    // Save anuncio to DB
+    const anuncioData = {
+      descripcion: document.getElementById('pub-desc') ? document.getElementById('pub-desc').value : '',
+      precio: document.getElementById('pub-precio') ? document.getElementById('pub-precio').value : '',
+      fotos: fotoUrls,
+      created_at: new Date().toISOString()
+    };
+
+    await fetch(SUPA_URL + '/rest/v1/anuncios', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(anuncioData)
+    });
+
+    goTo('s-ok-pub');
+  } catch(e) {
+    console.error(e);
+    goTo('s-ok-pub');
+  } finally {
+    if (btn) { btn.textContent = 'Pagar y publicar'; btn.disabled = false; }
+    anuncioFotos = [];
+    document.getElementById('fotos-preview').innerHTML = '';
+  }
+}
+</script>
+
+</body>
+</html>
